@@ -9,14 +9,19 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "groups": [
+      {
+        "group": "Login",
+        "pages": [
+          "login"
+        ]
+      },
       {
         "group": "ai/checklist",
         "pages": [
           "test"
         ]
-      },
-      "login"
+      }
     ]
   },
   "logo": {
