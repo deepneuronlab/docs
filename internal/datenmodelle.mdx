@@ -1,0 +1,100 @@
+---
+title: "Datenmodelle"
+description: "Datenbankschema und Haupt-Entitäten der Anwendung."
+sidebarTitle: "Datenmodelle"
+icon: "database"
+groups: ["internal"]
+hidden: false
+---
+
+## Kern-Entitäten
+
+### User
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| email | string | E-Mail-Adresse (unique) |
+| hashed_password | string | Gehashtes Passwort |
+| full_name | string | Vollständiger Name |
+| group_id | FK → Group | Organisationsgruppe |
+| role | string? | Benutzerdefinierte Rolle |
+| is_group_admin | bool | Gruppenadmin-Rechte |
+| is_external_api_user | bool | Externer API-Zugriff |
+| locale | string | Spracheinstellung (de-DE, en-GB, etc.) |
+| identity_provider | string? | SSO-Provider (azure, mazars) |
+| identity_provider_id | string? | Provider-spezifische ID |
+
+### Group
+Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relationen.
+
+### Company (Mandat)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| name | string | Mandatsname |
+| company_number | string | Mandatsnummer (unique pro Gruppe) |
+| group_id | FK → Group | Zugehörige Gruppe |
+| is_deleted | bool | Soft Delete |
+
+### Assignment (Auftrag)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| company_id | FK → Company | Zugehöriges Mandat |
+| checklist_id | FK → Checklist | Verwendete Checkliste |
+| product_type | enum | notes, mngmt_report, sustainability_report, account_mapping, numerical_audit |
+| status | enum | incomplete, in_progress, completed, draft, deleted |
+| processing_status | enum | pending, ready, error |
+| progress | int (0-100) | Fortschritt in Prozent |
+
+### Question (Checklisten-Frage)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| assignment_id | FK → Assignment | Zugehöriger Auftrag |
+| text | string | Fragetext |
+| ai_model | enum | pythia, llm |
+| flow_status | enum | unedited, auditing, audited, reviewing, reviewed |
+| answer | string? | Antwort (yes, no, n.a.) |
+| references | M2M → Reference | Verknüpfte Referenzen |
+
+### Reference (Dokument-Referenz)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| assignment_id | FK | Zugehöriger Auftrag |
+| pdf_id | FK | Dokument |
+| question_id | FK | Verknüpfte Frage |
+| start_offset, end_offset | int | Position im Dokument |
+| page_index | int | Seitenzahl |
+| state | enum | accepted, proposal, fallback, rejected |
+| consistency | string? | Konsistenzstatus |
+
+### CheckedNumber (Geprüfte Zahl)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| assignment_id | FK | Zugehöriger Auftrag |
+| pdf_id | FK | Dokument |
+| value | decimal | Zahlenwert |
+| kind | enum | number, total, subtotal |
+| currency | string? | Währung |
+| references | M2M → Reference | Externe Nachweise |
+
+### FileMetadata (Dokument)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| assignment_id | FK | Zugehöriger Auftrag |
+| s3_key | string | Azure Blob Storage Key |
+| name | string | Dateiname |
+| file_type | string | Dokumenttyp |
+| status | enum | pending, processing, ready, error |
+
+### Weitere Entitäten
+- **Calculation** — Kalkulationen mit Formeln und Komponenten
+- **AccountMapping** — Kontenzuordnungen mit Proposals
+- **PDFComment** — Benutzer-Annotationen im Dokument
+- **ProposedChange** — Änderungsvorschläge
+- **DocumentDiff** — Versionsvergleiche
+- **TimeMachine** — Wiederherstellungspunkte
+- **Export** — Generierte Exportdateien
+- **Checklist** — Checklisten-Templates (40+ verschiedene)
+- **Feature** — Feature Flags pro Gruppe
+
+## Migrations
+
+Aerich (Tortoise ORM). 152+ Migrationsdateien in `anexo/migrations/models/`.

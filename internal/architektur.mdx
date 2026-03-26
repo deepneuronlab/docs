@@ -1,0 +1,57 @@
+---
+title: "Systemarchitektur"
+description: "Übersicht der Microservices, Infrastruktur und Kommunikation."
+sidebarTitle: "Architektur"
+icon: "diagram-project"
+groups: ["internal"]
+hidden: false
+---
+
+## Microservices-Architektur
+
+Notes Auditor besteht aus mehreren spezialisierten Python-Services:
+
+| Service | Port | Python | Beschreibung |
+|---|---|---|---|
+| **anexo** | 2846 | 3.10 | Haupt-Backend (FastAPI) — API, Business Logic, Auth |
+| **external_api** | 2855 | 3.10 | Öffentliche API für externe Integrationen |
+| **delphi** | 3211 | 3.11 | LLM-basierte Dokumentenanalyse mit RAG (Qdrant) |
+| **pythia** | 5378 | 3.10 | ML-Scoring-Service (Binärklassifikation) |
+| **spectra** | 5379 | 3.12 | Zahlenerkennung und Attribut-Extraktion |
+| **mentat** | 3212 | 3.11 | Kontenzuordnung (6-Stufen-Matching) |
+| **document_converter** | 4741 | 3.9 | DOCX→PDF-Konvertierung (LibreOffice) |
+
+## Infrastruktur
+
+| Komponente | Port | Zweck |
+|---|---|---|
+| **PostgreSQL** | 5432 | Primäre Datenbank |
+| **Redis** | 6379 | Cache, Task-Queue, WebSocket-State, Locks (6 DBs) |
+| **Qdrant** | 6333 | Vektor-Datenbank (Embeddings) |
+| **Phoenix** | 6006 | OpenTelemetry Tracing |
+
+## Externe Services
+
+- **Azure OpenAI** — Chat Completions (GPT-4.1), Embeddings (text-embedding-3-large)
+- **Azure Blob Storage** — Dokumentenspeicherung
+- **Azure Form Recognizer** — OCR, Tabellenerkennung
+- **LiteLLM Gateway** (optional) — Proxy für Kostenoptimierung
+- **Mailgun** — E-Mail-Versand
+- **Sentry** — Error Tracking
+- **InfluxDB** — Metriken
+
+## Kommunikation
+
+- **REST API** — Synchrone Client-Server-Kommunikation
+- **WebSocket (Socket.IO)** — Echtzeit-Updates (Auftrags-Status, Dateiverarbeitung, KI-Analyse)
+- **Huey (Redis)** — Asynchrone Task-Queue (I/O-intensiv + CPU-intensiv)
+- **Aioredlock** — Verteilte Locks für Concurrency-Kontrolle
+
+## Tech-Stack Frontend
+
+- **Vue 3** mit Vite, TypeScript
+- **Shoelace + Tailwind CSS** — UI-Komponenten
+- **Nutrient SDK** — PDF-Viewer
+- **Syncfusion** — Word/Excel-Editoren
+- **Socket.IO Client** — Echtzeit-Updates
+- **vue-i18n** — Internationalisierung

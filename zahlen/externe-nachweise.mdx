@@ -1,0 +1,62 @@
+---
+title: "Externe Nachweise"
+description: "KI-validierte und manuelle externe Nachweise in ai/numbers."
+sidebarTitle: "Externe Nachweise"
+icon: "paperclip"
+---
+
+## 1. KI-validierte Nachweise
+
+Die KI überprüft automatisch, ob die externen Nachweise in den Nachweisdokumenten mit den entsprechenden Zahlen im Hauptdokument übereinstimmen.
+
+Wenn eine Übereinstimmung gefunden wird, wird der **"Extern"-Button** (Büroklammer-Symbol) im Zahlenbereich **grün** hervorgehoben. Dies zeigt an, dass die KI Nachweise zur Validierung einer Zahl gefunden hat.
+
+Die KI validiert externe Nachweise automatisch und bewertet diese als konsistent oder inkonsistent. Durch Klicken auf den **"Anzeigen"-Button** wird der Nachweis im Dokument sichtbar gemacht und farblich hervorgehoben.
+
+## 2. KI-vorgeschlagene Nachweise
+
+Wenn die KI eine Beurteilung des Prüfers erfordert, wird der gefundene Nachweis als KI-Vorschlag hinzugefügt. Hat eine Zahl nur einen KI-Vorschlag, wird der **"Extern"-Button** **gelb** angezeigt.
+
+Ein KI-Vorschlag kann bestätigt werden, indem der **"Akzeptieren"-Button** (Haken) angeklickt wird.
+
+Ein KI-Vorschlag kann abgelehnt werden, indem der **„Löschen"-Button** (Papierkorb) angeklickt wird.
+
+<Note>
+**Hinweis:** KI-Vorschläge werden erst nach ihrer Akzeptanz in den Export übernommen.
+</Note>
+
+## 3. Externe Nachweise zu Zahlen hinzufügen
+
+Es gibt zwei Möglichkeiten, Nachweise zu einer Zahl hinzuzufügen:
+
+### 1. Nachweis direkt aus dem Nachweisdokument hinzufügen
+
+Eine Zahl kann direkt aus einem Nachweisdokument zu einer geöffneten Zahl im Zahlenbereich hinzugefügt werden.
+
+Dazu muss die betreffende Zahl im Zahlenbereich geöffnet sein. Anschließend kann der Nachweis mit dem Cursor selektiert werden. Es öffnet sich automatisch ein Menüfeld und die gewünschte Textstelle, oder Zahl kann über die Option **„Als Nachweis verwenden"** hinzugefügt werden.
+
+### 2. Nachweis über den Zahlenbereich hinzufügen
+
+Alternativ kann ein Nachweis hinzugefügt werden, indem Sie im **Nachweis-Tab** der geöffneten Zahl auf **„+ Nachweis hinzufügen"** klicken.
+
+Dadurch öffnet sich automatisch der **Selektionsmodus**, in dem die zu prüfende Zahl hervorgehoben wird. Anschließend können Sie den Nachweis markieren. Der Nachweis wird so automatisch mit der zu prüfenden Zahl verknüpft.
+
+## 4. Nachweise im Dokument anzeigen
+
+Durch das Klicken auf den **„Anzeigen"-Button** neben dem Nachweis wird der Nachweis im Dokument sichtbar gemacht und hervorgehoben.
+
+## 5. Verknüpfte Zahlen eines Nachweises anzeigen
+
+Durch das Klicken auf eine Nachweismarkierung im Dokument öffnet sich ein Menü mit allen verknüpften Zahlen. Das Klicken auf eine Zahl öffnet diese in der Numbers-Sektion.
+
+## 6. Nachweise löschen
+
+Zum Löschen eines Nachweises muss **"Nachweise"** einer ausgewählten Zahl geöffnet werden. Nachdem ein Nachweis ausgewählt wurde, kann dieser durch das Klicken des Papierkorbs gelöscht werden.
+
+## 7. Automatische Re-Validierung nach dem Hochladen einer neuen Dokumentversion
+
+Beim Hochladen einer neuen Dokumentversion werden alle verknüpften Nachweise automatisch auf Änderungen überprüft.
+
+Wenn sich ein Nachweis geändert hat, wird dieser als **"KI Vorschlag"** markiert. Jene Nachweise werden gelb hervorgehoben, was darauf hinweist, dass die Änderungen erneut bewertet werden müssen. Der Konsistenzstatus der Nachweise wird automatisch aktualisiert.
+
+Wenn ein Nachweis in der neuen Dokumentversion nicht gefunden werden konnte, wird er als **„verloren"** angezeigt. Diese werden gelb hervorgehoben, um darauf hinzuweisen, dass der Nachweis möglicherweise erneut verbunden werden muss. Um den "verlorenen Nachweis" wieder zu verknüpfen, sollte er gelöscht und ein neuer Nachweis hinzugefügt werden.

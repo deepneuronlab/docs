@@ -1,0 +1,116 @@
+---
+title: "API-Referenz"
+description: "Vollständige Übersicht aller Backend-API-Endpunkte."
+sidebarTitle: "API-Referenz"
+icon: "code"
+groups: ["internal"]
+hidden: false
+---
+
+Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer Token (OAuth2).
+
+## Authentifizierung & Benutzer
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| POST | `/swagger-auth/login` | Login |
+| POST | `/users/register` | Registrierung |
+| POST | `/users/reset-password` | Passwort zurücksetzen |
+| GET | `/users` | Benutzer auflisten |
+| PUT | `/users/{id}` | Benutzer aktualisieren |
+| PUT | `/users/locale` | Sprache ändern |
+
+## OIDC / SSO
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/azure/login-uri` | Azure AD Login-Redirect |
+| GET | `/mazars/login-uri` | Mazars Login-Redirect |
+
+## Admin-Panel
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/admin/groups/list` | Gruppen auflisten |
+| POST | `/admin/groups/create` | Gruppe erstellen |
+| POST | `/admin/users/create-bulk` | Benutzer massenhaft erstellen |
+| POST | `/admin/users/verify` | Benutzer verifizieren |
+| PATCH | `/admin/users/{id}/toggle-active` | Benutzer aktivieren/deaktivieren |
+| PATCH | `/admin/users/{id}/toggle-group-admin` | Gruppenadmin umschalten |
+| GET | `/admin/checklists/list` | Checklisten verwalten |
+| POST | `/admin/checklists/toggle` | Checkliste aktivieren/deaktivieren |
+| GET | `/admin/features/group/{id}` | Feature Flags pro Gruppe |
+| POST | `/admin/features/toggle` | Feature Flag umschalten |
+
+## Mandate (Companies)
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/companies` | Mandate auflisten (mit Pagination) |
+| POST | `/companies` | Mandat erstellen |
+| PUT | `/companies/{id}` | Mandat bearbeiten |
+| DELETE | `/companies/{id}` | Mandat löschen |
+
+## Aufträge (Assignments)
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/companies/{cid}/assignments` | Aufträge auflisten |
+| POST | `/companies/{cid}/assignments` | Auftrag erstellen |
+| PUT | `/companies/{cid}/assignments/{id}` | Auftrag bearbeiten |
+| PATCH | `/companies/{cid}/assignments/{id}/status` | Status ändern |
+| PATCH | `/companies/{cid}/assignments/{id}/users` | Benutzer zuweisen |
+| GET | `/companies/{cid}/assignments/{id}/details` | Details abrufen |
+
+## Checkliste (Questions)
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/assignments/{aid}/questions` | Fragen auflisten |
+| GET | `/assignments/{aid}/questions/{id}` | Frage-Details |
+| PATCH | `/assignments/{aid}/questions/{id}` | Antwort aktualisieren |
+
+**Flow-Status:** `UNEDITED` → `AUDITING` → `AUDITED` → `REVIEWING` → `REVIEWED`
+
+## Zahlenprüfung (Checked Numbers)
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/companies/{cid}/assignments/{aid}/checked-numbers-tree` | Zahlenbaum abrufen |
+| PATCH | `/companies/{cid}/assignments/{aid}/checked-numbers-tree` | Zahl aktualisieren |
+| PATCH | `/companies/{cid}/assignments/{aid}/checked-numbers-tree/bulk` | Bulk-Update |
+
+## Datei-Manager
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/companies/{cid}/assignments/{aid}/file-manager` | Dateien/Ordner auflisten |
+| POST | `/companies/{cid}/assignments/{aid}/file-manager/{id}/re-referencing` | Referenzen aktualisieren |
+| POST | `/companies/{cid}/assignments/{aid}/file-manager/{id}/predict-numbers` | ML-Vorhersagen starten |
+| PATCH | `/companies/{cid}/assignments/{aid}/file-manager/{id}` | Metadaten aktualisieren |
+| PATCH | `/companies/{cid}/assignments/{aid}/file-manager/{id}/status` | Dateistatus ändern |
+| DELETE | `/companies/{cid}/assignments/{aid}/file-manager/{id}` | Datei löschen |
+
+## Dokument & PDF
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/document/{id}/references` | Referenzen abrufen |
+| GET | `/document/{id}/edit` | Kommentare & Änderungsvorschläge |
+| GET | `/document/{id}/diff` | Versionsunterschiede |
+| PATCH | `/document/{id}/edit` | Änderungen speichern |
+| GET | `/pdf/{id}` | PDF-Inhalt abrufen |
+
+## Export
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/export/checked-numbers/annotations-grouped-by-file` | Zahlen-Annotationen |
+| GET | `/export/questions/annotations` | Fragen-Annotationen |
+| GET | `/export/questions/{format}` | Fragen exportieren (xlsx/pdf) |
+| GET | `/export/checked-numbers/tabs` | Zahlen-Tabs exportieren |
+| GET | `/export/changed-assignments` | Geänderte Aufträge |
+
+## Externe API (`/api` Prefix)
+
+Vereinfachte API für externe Clients mit API-Key-Authentifizierung. Endpunkte: Auth, Company, Assignment, Checklist, Taxonomy.

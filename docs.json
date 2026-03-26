@@ -10,15 +10,77 @@
   "navigation": {
     "groups": [
       {
-        "group": "Login",
+        "group": "Erste Schritte",
         "pages": [
-          "login"
+          "anmeldung/index"
+        ]
+      },
+      {
+        "group": "Mandatsübersicht",
+        "pages": [
+          "mandatsuebersicht/index",
+          "mandatsuebersicht/mandat-hinzufuegen",
+          "mandatsuebersicht/mandate-verwalten",
+          "mandatsuebersicht/sprache-wechseln"
+        ]
+      },
+      {
+        "group": "Auftragsübersicht",
+        "pages": [
+          "auftragsuebersicht/index",
+          "auftragsuebersicht/auftrag-anlegen",
+          "auftragsuebersicht/datei-manager",
+          "auftragsuebersicht/datei-exportieren",
+          "auftragsuebersicht/zugriffsrechte-verwalten",
+          "auftragsuebersicht/edit-modus",
+          "auftragsuebersicht/versionsunterschiede"
         ]
       },
       {
         "group": "ai/checklist",
         "pages": [
-          "test"
+          "checkliste/index",
+          "checkliste/vorbereiten",
+          "checkliste/bemerkungen-notizen",
+          "checkliste/referenzen",
+          "checkliste/review",
+          "checkliste/hilfreiche-funktionen"
+        ]
+      },
+      {
+        "group": "ai/numbers",
+        "pages": [
+          "zahlen/index",
+          "zahlen/zahlen-verwalten",
+          "zahlen/externe-nachweise",
+          "zahlen/kalkulationen",
+          "zahlen/interne-konsistenz",
+          "zahlen/versionsunterschiede",
+          "zahlen/bemerkungen",
+          "zahlen/hilfreiche-funktionen",
+          "zahlen/review"
+        ]
+      },
+      {
+        "group": "Feedback & Kontakt",
+        "pages": [
+          "feedback/index",
+          "feedback/kontaktiere-uns",
+          "feedback/in-app-feedback"
+        ]
+      },
+      {
+        "group": "Intern",
+        "pages": [
+          "internal/index",
+          "internal/architektur",
+          "internal/api-referenz",
+          "internal/datenmodelle",
+          "internal/ki-services",
+          "internal/auth-berechtigungen",
+          "internal/feature-flags",
+          "internal/frontend-architektur",
+          "internal/background-tasks"
         ]
       }
     ]
@@ -27,7 +89,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@dnl.ai"
       }
     ],
     "primary": {
@@ -38,15 +100,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "appearance": {
     "default": "system"

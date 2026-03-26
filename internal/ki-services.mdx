@@ -1,0 +1,101 @@
+---
+title: "KI-Services"
+description: "Übersicht der KI/ML-Services: Pythia, Delphi, Spectra, Mentat."
+sidebarTitle: "KI-Services"
+icon: "brain"
+groups: ["internal"]
+hidden: false
+---
+
+## Übersicht
+
+Notes Auditor nutzt vier spezialisierte KI-Services:
+
+## 1. Delphi — LLM-Dokumentenanalyse
+
+**Port:** 3211 | **Python:** 3.11
+
+Delphi nutzt Retrieval-Augmented Generation (RAG) zur Analyse von Prüfungsdokumenten und zur Beantwortung von Checklisten-Fragen.
+
+**Pipeline:**
+1. Dokument wird in Chunks aufgeteilt (chunking)
+2. Chunks werden als Vektoren in Qdrant gespeichert
+3. Bei einer Frage werden relevante Chunks per Vektor-Suche abgerufen
+4. LLM (Azure OpenAI) generiert Antwort basierend auf den Chunks
+5. LLM-basiertes Reranking für optimale Ergebnisse
+
+**Outputs:** Antworten auf Checklisten-Fragen, Referenzen im Dokument, Konsistenz-Vorschläge
+
+**Prompts:** Lokalisiert (de/en) in `delphi/src/delphi/prompts/`
+
+## 2. Spectra — Zahlenerkennung
+
+**Port:** 5379 | **Python:** 3.12
+
+Spectra erkennt finanzielle Zahlen in Dokumenten und extrahiert deren Attribute.
+
+**Pipeline:**
+1. Regex-basierte Zahlenerkennung im Dokument
+2. KI-Attribut-Extraktion (Multiplikator, Typ, Entität, Datum)
+3. FAISS-basierte Vektor-Suche für externe Nachweise
+4. Embedding-Cache in Redis (14 Tage TTL)
+
+**Outputs:** Erkannte Zahlen mit Attributen, Verknüpfungen zu Nachweisen
+
+**Operationen:** +, −, ×, ÷, Δ% (prozentuale Änderung)
+
+## 3. Pythia — ML-Scoring
+
+**Port:** 5378 | **Python:** 3.10
+
+Pythia bietet Binärklassifikation (Ja/Nein) für Checklisten-Fragen, basierend auf historischen Antwort-Daten.
+
+**Inputs:** Frage + Dokumentkontext
+**Outputs:** Wahrscheinlichkeits-Score für Ja/Nein
+
+## 4. Mentat — Kontenzuordnung
+
+**Port:** 3212 | **Python:** 3.11
+
+Mentat ordnet Konten aus der Buchhaltung den Positionen in der Taxonomie zu. Nutzt einen 6-stufigen Matching-Ansatz:
+
+<Steps>
+  <Step title="Positionsname">
+    Direkte Namensübereinstimmung
+  </Step>
+  <Step title="Mathematisches Matching">
+    3 Strategien für Summenabgleich
+  </Step>
+  <Step title="Vektor-Suche">
+    Ähnliche Konten via Qdrant
+  </Step>
+  <Step title="ML-Klassifikation">
+    FastText-basierte Zuordnung
+  </Step>
+  <Step title="LLM-Hierarchie">
+    Hierarchische Traversierung via Azure OpenAI
+  </Step>
+  <Step title="Manuell">
+    Fallback für nicht automatisch zuordenbare Konten
+  </Step>
+</Steps>
+
+## Konfiguration (Environment Variables)
+
+```
+ENABLE_PYTHIA_PREDICTIONS=false
+ENABLE_SPECTRA_PREDICTIONS=true
+ENABLE_DELPHI_PREDICTIONS=true
+ENABLE_MENTAT_PREDICTIONS=true
+ENABLE_STD_CALCULATIONS_PREDICTIONS=true
+ENABLE_LLM_CALCULATIONS_PREDICTIONS=true
+ENABLE_LLM_DIFF_CLASSIFICATIONS=true
+```
+
+## Timeouts
+
+| Service | Timeout |
+|---|---|
+| Spectra | 3000s |
+| Delphi | 900s |
+| Pythia | 300s |

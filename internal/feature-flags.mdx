@@ -1,0 +1,38 @@
+---
+title: "Feature Flags"
+description: "Feature-Steuerung und Konfiguration pro Gruppe."
+sidebarTitle: "Feature Flags"
+icon: "flag"
+groups: ["internal"]
+hidden: false
+---
+
+## Übersicht
+
+Feature Flags steuern die Verfügbarkeit von Funktionen pro Organisationsgruppe. Sie werden über das Admin-Panel oder Umgebungsvariablen konfiguriert.
+
+## Gruppenspezifische Features
+
+Features werden über die `Feature`-Entität pro Gruppe aktiviert/deaktiviert. Verwaltung über:
+- **Admin-Panel:** `/admin/features/group/{id}` und `/admin/features/toggle`
+- **API:** `GET /features` für den aktuellen Benutzer
+
+## KI-Service Feature Flags (Environment)
+
+| Variable | Default | Beschreibung |
+|---|---|---|
+| `ENABLE_PYTHIA_PREDICTIONS` | false | ML-Scoring für Checklisten-Fragen |
+| `ENABLE_SPECTRA_PREDICTIONS` | true | Zahlenerkennung und Attribut-Extraktion |
+| `ENABLE_DELPHI_PREDICTIONS` | true | LLM-basierte Dokumentenanalyse |
+| `ENABLE_MENTAT_PREDICTIONS` | true | Kontenzuordnung |
+| `ENABLE_STD_CALCULATIONS_PREDICTIONS` | true | Standard-Kalkulationsprüfung |
+| `ENABLE_LLM_CALCULATIONS_PREDICTIONS` | true | LLM-basierte Kalkulationsprüfung |
+| `ENABLE_LLM_DIFF_CLASSIFICATIONS` | true | LLM-basierte Diff-Klassifikation |
+
+## Infrastruktur Feature Flags
+
+| Variable | Default | Beschreibung |
+|---|---|---|
+| `ENABLE_FILE_CACHE` | true | Datei-Caching aktivieren |
+| `ENABLE_METRICS` | false | Prometheus-Metriken |
+| `ENABLE_LITELLM_GATEWAY` | false | LiteLLM-Proxy für Azure OpenAI |

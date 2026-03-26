@@ -1,0 +1,51 @@
+---
+title: "Background Tasks"
+description: "Huey Task-Queue, Cronjobs und asynchrone Verarbeitung."
+sidebarTitle: "Background Tasks"
+icon: "gears"
+groups: ["internal"]
+hidden: false
+---
+
+## Task-Queue: Huey mit Redis
+
+Zwei getrennte Queues für unterschiedliche Workloads:
+
+### io_huey — I/O-intensive Tasks
+
+| Task | Beschreibung |
+|---|---|
+| `initialize_questionnaire_task` | Checklisten-Initialisierung |
+| `extract_text_from_all_pdf_files_task` | Textextraktion aus PDFs |
+| `import_docx_comments_and_proposed_changes_into_db_for_all_files_task` | DOCX-Kommentare importieren |
+| `enqueue_delphi_predictions_task` | LLM-Vorhersagen starten |
+| `update_spectra_predictions_of_new_assignment_task` | Zahlenerkennung starten |
+| `send_emails_task` | E-Mails versenden |
+| `trigger_file_ai_analysis_task` | KI-Dateianalyse starten |
+
+### cpu_huey — CPU-intensive Tasks
+
+| Task | Beschreibung |
+|---|---|
+| `update_calculations_of_new_assignment_task` | Kalkulationen aktualisieren |
+| `recreate_questionnaire_from_edited_criteria_task` | Checkliste neu generieren |
+| `remove_duplicate_number_references_task` | Duplikate bereinigen |
+
+## Cronjobs
+
+| Intervall | Task | Beschreibung |
+|---|---|---|
+| Täglich | Abgelaufene Wiederherstellungspunkte löschen | TimeMachine Cleanup |
+| Täglich | Unvollständige Aufträge nach 7 Tagen löschen | Draft Cleanup |
+| Jede Minute | Ausstehende E-Mails versenden | E-Mail-Queue |
+
+## Concurrency-Kontrolle
+
+Verteilte Locks via Aioredlock (Redis):
+
+| Lock | Zweck |
+|---|---|
+| `questionnaire_lock_manager` | Checklisten-Verarbeitung |
+| `delphi_cleanup_lock_manager` | Delphi-Bereinigung |
+| `reference_merger_lock_manager` | Referenzen zusammenführen |
+| `send_email_lock_manager` | E-Mail-Versand |

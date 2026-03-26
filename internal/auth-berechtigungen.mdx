@@ -1,0 +1,60 @@
+---
+title: "Authentifizierung & Berechtigungen"
+description: "Auth-Flows, Rollen und Berechtigungsmodell."
+sidebarTitle: "Auth & Berechtigungen"
+icon: "shield"
+groups: ["internal"]
+hidden: false
+---
+
+## Authentifizierung
+
+### Login-Methoden
+
+1. **Benutzername/Passwort** — Standard-Login via FastAPI-Users
+2. **Azure AD (Entra ID)** — SSO via OIDC
+3. **Mazars** — Custom Identity Provider via OIDC
+
+### Token-Management
+
+- OAuth2 mit Bearer Token
+- Token-Refresh: 5 Minuten vor Ablauf
+- Auto-Logout bei Inaktivität
+- Identity-Provider-Mapping: `unique_together(provider, provider_id)`
+
+## Berechtigungsmodell
+
+### Permissions (pro Benutzer)
+
+| Permission | Beschreibung |
+|---|---|
+| `can_create_companies` | Mandate erstellen |
+| `can_edit_companies` | Mandate bearbeiten |
+| `can_delete_companies` | Mandate löschen |
+| `can_create_assignments` | Aufträge erstellen |
+| `can_delete_assignments` | Aufträge löschen |
+| `can_change_assignment_users` | Benutzerzuweisungen ändern |
+| `can_see_all_companies` | Alle Mandate einsehen |
+| `can_see_all_assignments` | Alle Aufträge einsehen |
+| `can_send_emails` | E-Mails versenden |
+| `can_use_ai_assistant` | KI-Assistent nutzen (Feature Flag) |
+
+### Rollen
+
+- **Benutzer** — Standard-Zugriff auf zugewiesene Mandate/Aufträge
+- **Gruppenadmin** (`is_group_admin`) — Benutzer- und Gruppenverwaltung über Admin-Panel
+- **Externer API-Benutzer** (`is_external_api_user`) — Zugriff auf die externe API mit API-Key
+
+### Zugriffshierarchie
+
+1. **Gruppe** — Organisationseinheit, steuert verfügbare Checklisten und Features
+2. **Mandat** — Gehört zu einer Gruppe, Zugriff via `can_see_all_companies` oder Zuweisung
+3. **Auftrag** — Gehört zu einem Mandat, Zugriff via `can_see_all_assignments` oder `AssignmentUser`
+
+## Admin-Panel
+
+HTML-basiertes Interface (getrennt von der Haupt-API). Funktionen:
+- Benutzer erstellen, verifizieren, aktivieren/deaktivieren
+- Gruppen verwalten
+- Checklisten pro Gruppe aktivieren/deaktivieren
+- Feature Flags pro Gruppe steuern

@@ -1,0 +1,85 @@
+---
+title: "Frontend-Architektur"
+description: "Vue 3 SPA — Komponenten, State Management, Services."
+sidebarTitle: "Frontend"
+icon: "window-maximize"
+groups: ["internal"]
+hidden: false
+---
+
+## Tech-Stack
+
+| Technologie | Version | Zweck |
+|---|---|---|
+| Vue 3 | - | UI-Framework |
+| Vite | 7.3.1 | Build-Tool |
+| TypeScript | ~5.9.3 | Typsicherheit |
+| Vue Router | 5.0.4 | Routing |
+| vue-i18n | 11.3.0 | Internationalisierung |
+| Shoelace | 2.20.1 | Web Components |
+| Tailwind CSS | 4.2.2 | Styling |
+| Socket.IO Client | 4.8.1 | Echtzeit-Updates |
+| Nutrient SDK | 1.10.0 | PDF-Viewer |
+| Syncfusion | 33.x | Word/Excel-Editoren |
+| TipTap | - | Rich Text Editor |
+| XState | 5.28.0 | State Machines |
+| Vitest | 4.1.0 | Testing |
+
+## Routen
+
+| Pfad | Komponente | Beschreibung |
+|---|---|---|
+| `/login` | TheLogin.vue | Login (Passwort + SSO) |
+| `/companies` | TheCompanies.vue | Mandatsübersicht |
+| `/company/:id/assignments` | TheAssignments.vue | Auftragsübersicht |
+| `/.../audit/sorting/:idx` | TheAuditFlowContainer.vue | Checkliste: Vorbereiten |
+| `/.../review/sorting/:idx` | TheAuditFlowContainer.vue | Checkliste: Review |
+| `/.../audit-numbers` | TheAuditFlowContainer.vue | Zahlen: Vorbereiten |
+| `/.../review-numbers` | TheAuditFlowContainer.vue | Zahlen: Review |
+| `/.../audit-diff` | TheDiffFlow.vue | Diff: Vorbereiten |
+| `/.../review-diff` | TheDiffFlow.vue | Diff: Review |
+| `/:cid/:aid/account-mapping` | AccountMapping.vue | Kontenzuordnung |
+
+## State Management
+
+Modularer Store in `src/store/modules/`:
+
+| Modul | Beschreibung |
+|---|---|
+| `auth` | Token, User, Permissions, Login/Logout |
+| `companies` | Mandatsliste, Filter, Pagination |
+| `assignments` | Auftragsliste, CRUD |
+| `checklistFlow` | Fragen, Antworten, Fortschritt |
+| `numbers` | Zahlenbaum, Nachweise, Kalkulationen |
+| `fileManager` | Dateien, Upload-Fortschritt, Versionen |
+| `account-mapping` | Kontenzuordnungen, Proposals |
+| `settings` | Benutzereinstellungen (Sprache, Ansicht) |
+| `features` | Feature Flags |
+| `global` | Globale Fehler, Benachrichtigungen |
+
+## Haupt-Komponenten
+
+| Komponente | Größe | Beschreibung |
+|---|---|---|
+| TheNumbersFlow.vue | 181KB | Zahlenprüfung (größte Komponente) |
+| TheChecklistFlow.vue | 125KB | Checklisten-Prüfung |
+| TheDiffFlow.vue | 52KB | Versionsvergleich |
+| AccountMapping.vue | 34KB | Kontenzuordnung |
+
+## WebSocket
+
+- Pfad: `/anexo/ws/socket.io`
+- Protokoll: WebSocket (wss/ws)
+- Auth: Token-basiert
+- Reconnection: Max 5 Versuche, 1-5s exponentieller Backoff
+- Multi-Tab-Sync via BroadcastChannel API
+
+## Composables (36)
+
+Wichtigste: `useAuditFlowState`, `useFileUpload`, `useNumbersFlowLoader`, `usePopoutWindow`, `useSocketReconnection`, `useTabSync`, `useVersionChecker`
+
+## Monitoring
+
+- **Sentry** — Error Tracking & Performance
+- **Usersnap** — In-App Feedback
+- **Performance Monitor** — Page-Freeze-Erkennung, Hardware-Reporting
