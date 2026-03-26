@@ -1,62 +1,56 @@
 ---
-title: "Externe Nachweise"
-description: "KI-validierte und manuelle externe Nachweise in ai/numbers."
-sidebarTitle: "Externe Nachweise"
+title: "External Evidence"
+description: "AI-validated and manual external evidence in ai/numbers."
+sidebarTitle: "External Evidence"
 icon: "paperclip"
 ---
 
-## 1. KI-validierte Nachweise
+## 1. AI-validated External Evidence
 
-Die KI überprüft automatisch, ob die externen Nachweise in den Nachweisdokumenten mit den entsprechenden Zahlen im Hauptdokument übereinstimmen.
+AI automatically checks whether external evidence in the supporting documents matches the corresponding figures in the main document.
 
-Wenn eine Übereinstimmung gefunden wird, wird der **"Extern"-Button** (Büroklammer-Symbol) im Zahlenbereich **grün** hervorgehoben. Dies zeigt an, dass die KI Nachweise zur Validierung einer Zahl gefunden hat.
+When such a match is found, the **"External" button** (paperclip icon) in the numbers section will be highlighted **green**. This indicates that the AI has found evidence to validate a figure.
 
-Die KI validiert externe Nachweise automatisch und bewertet diese als konsistent oder inkonsistent. Durch Klicken auf den **"Anzeigen"-Button** wird der Nachweis im Dokument sichtbar gemacht und farblich hervorgehoben.
+The AI automatically validates and documents the consistency as consistent or inconsistent. By clicking on the **"View"** next to the evidence, the evidence will be scrolled into view and highlighted in the document.
 
-## 2. KI-vorgeschlagene Nachweise
+## 2. AI-proposed External Evidence
 
-Wenn die KI eine Beurteilung des Prüfers erfordert, wird der gefundene Nachweis als KI-Vorschlag hinzugefügt. Hat eine Zahl nur einen KI-Vorschlag, wird der **"Extern"-Button** **gelb** angezeigt.
+If the AI requires the auditor's judgment, it adds the found evidence as AI Proposal. If a figure has only AI proposal the **"External"** button appears in **yellow.**
 
-Ein KI-Vorschlag kann bestätigt werden, indem der **"Akzeptieren"-Button** (Haken) angeklickt wird.
-
-Ein KI-Vorschlag kann abgelehnt werden, indem der **„Löschen"-Button** (Papierkorb) angeklickt wird.
+To confirm an AI Proposal, click on the **"Accept"** button (check icon). To reject an AI Proposal, click on the **"Delete"** button (bin icon).
 
 <Note>
-**Hinweis:** KI-Vorschläge werden erst nach ihrer Akzeptanz in den Export übernommen.
+AI Proposals will not be part of the export until they have been accepted.
 </Note>
 
-## 3. Externe Nachweise zu Zahlen hinzufügen
+## 3. Adding External Evidence to Figures
 
-Es gibt zwei Möglichkeiten, Nachweise zu einer Zahl hinzuzufügen:
+There are two ways to add evidence to a figure:
 
-### 1. Nachweis direkt aus dem Nachweisdokument hinzufügen
+### 1. Add evidence directly from the supporting document
 
-Eine Zahl kann direkt aus einem Nachweisdokument zu einer geöffneten Zahl im Zahlenbereich hinzugefügt werden.
+A figure can be linked directly from a supporting document to an open figure in the numbers section. To do so, the respective figure must be opened in the **numbers section**. Then, select the evidence in the supporting document using the **cursor**. A menu will automatically appear, which allows adding selected text or number by clicking **"Use as Evidence."**
 
-Dazu muss die betreffende Zahl im Zahlenbereich geöffnet sein. Anschließend kann der Nachweis mit dem Cursor selektiert werden. Es öffnet sich automatisch ein Menüfeld und die gewünschte Textstelle, oder Zahl kann über die Option **„Als Nachweis verwenden"** hinzugefügt werden.
+### 2. Add evidence via the numbers section
 
-### 2. Nachweis über den Zahlenbereich hinzufügen
+Alternatively, evidence can be added by clicking **"+ Add Evidence"** within the **Evidence tab** of the opened figure. This will automatically open the **selection mode**, highlighting the figure to be checked. The evidence can then be marked in the supporting document. The selected evidence will automatically be linked to the corresponding figure.
 
-Alternativ kann ein Nachweis hinzugefügt werden, indem Sie im **Nachweis-Tab** der geöffneten Zahl auf **„+ Nachweis hinzufügen"** klicken.
+## 4. View Evidence in the Document
 
-Dadurch öffnet sich automatisch der **Selektionsmodus**, in dem die zu prüfende Zahl hervorgehoben wird. Anschließend können Sie den Nachweis markieren. Der Nachweis wird so automatisch mit der zu prüfenden Zahl verknüpft.
+By clicking on the **"View"** next to the evidence, the system will automatically scroll to the correct page and highlight the evidence in the document.
 
-## 4. Nachweise im Dokument anzeigen
+## 5. See the Connected Figures of an Evidence
 
-Durch das Klicken auf den **„Anzeigen"-Button** neben dem Nachweis wird der Nachweis im Dokument sichtbar gemacht und hervorgehoben.
+By clicking on a highlighted evidence in the document, a menu with all connected figures opens. Click on a figure in the menu to open it in the numbers section.
 
-## 5. Verknüpfte Zahlen eines Nachweises anzeigen
+## 6. Delete External Evidence
 
-Durch das Klicken auf eine Nachweismarkierung im Dokument öffnet sich ein Menü mit allen verknüpften Zahlen. Das Klicken auf eine Zahl öffnet diese in der Numbers-Sektion.
+To delete an evidence, open the figure in the numbers section and click on the **"External"** tab. Connected evidence can be deleted by clicking the **"Delete"** (bin icon).
 
-## 6. Nachweise löschen
+## 7. Automatic Re-Validation after Uploading New Document Version
 
-Zum Löschen eines Nachweises muss **"Nachweise"** einer ausgewählten Zahl geöffnet werden. Nachdem ein Nachweis ausgewählt wurde, kann dieser durch das Klicken des Papierkorbs gelöscht werden.
+Uploading a new version of a document automatically checks all linked evidences for changes.
 
-## 7. Automatische Re-Validierung nach dem Hochladen einer neuen Dokumentversion
+If an evidence has changed in a new document version, the status of the figure will be set back to **"AI-Proposal"** (yellow), and the connected figures get **Flagged by AI,** indicating that the changes need to be re-evaluated. The consistency state of the evidence gets updated automatically.
 
-Beim Hochladen einer neuen Dokumentversion werden alle verknüpften Nachweise automatisch auf Änderungen überprüft.
-
-Wenn sich ein Nachweis geändert hat, wird dieser als **"KI Vorschlag"** markiert. Jene Nachweise werden gelb hervorgehoben, was darauf hinweist, dass die Änderungen erneut bewertet werden müssen. Der Konsistenzstatus der Nachweise wird automatisch aktualisiert.
-
-Wenn ein Nachweis in der neuen Dokumentversion nicht gefunden werden konnte, wird er als **„verloren"** angezeigt. Diese werden gelb hervorgehoben, um darauf hinzuweisen, dass der Nachweis möglicherweise erneut verbunden werden muss. Um den "verlorenen Nachweis" wieder zu verknüpfen, sollte er gelöscht und ein neuer Nachweis hinzugefügt werden.
+If an evidence could not be found in the new document version, the evidence will be evaluated as **"lost,"** and the connected figures will automatically be set to **"Flagged by AI".** This indicates that the evidence might need to be reconnected. To reconnect the lost evidence, delete the incorrect evidence and add an updated evidence.
