@@ -11,160 +11,87 @@
     "languages": [
       {
         "language": "en",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": [
-              "anmeldung/index"
-            ]
-          },
-          {
-            "group": "Clients Overview",
-            "pages": [
-              "mandatsuebersicht/index",
-              "mandatsuebersicht/mandat-hinzufuegen",
-              "mandatsuebersicht/mandate-verwalten",
-              "mandatsuebersicht/sprache-wechseln"
-            ]
-          },
-          {
-            "group": "Assignments Overview",
-            "pages": [
-              "auftragsuebersicht/index",
-              "auftragsuebersicht/auftrag-anlegen",
-              "auftragsuebersicht/datei-manager",
-              "auftragsuebersicht/datei-exportieren",
-              "auftragsuebersicht/zugriffsrechte-verwalten",
-              "auftragsuebersicht/edit-modus",
-              "auftragsuebersicht/versionsunterschiede"
-            ]
-          },
-          {
-            "group": "ai/checklist",
-            "pages": [
-              "checkliste/index",
-              "checkliste/vorbereiten",
-              "checkliste/bemerkungen-notizen",
-              "checkliste/referenzen",
-              "checkliste/review",
-              "checkliste/hilfreiche-funktionen"
-            ]
-          },
-          {
-            "group": "ai/numbers",
-            "pages": [
-              "zahlen/index",
-              "zahlen/zahlen-verwalten",
-              "zahlen/externe-nachweise",
-              "zahlen/kalkulationen",
-              "zahlen/interne-konsistenz",
-              "zahlen/versionsunterschiede",
-              "zahlen/bemerkungen",
-              "zahlen/hilfreiche-funktionen",
-              "zahlen/review"
-            ]
-          },
-          {
-            "group": "Feedback & Contact",
-            "pages": [
-              "feedback/index",
-              "feedback/kontaktiere-uns",
-              "feedback/in-app-feedback"
-            ]
-          },
-          {
-            "group": "Internal",
-            "pages": [
-              "internal/index",
-              "internal/architektur",
-              "internal/api-referenz",
-              "internal/datenmodelle",
-              "internal/ki-services",
-              "internal/auth-berechtigungen",
-              "internal/feature-flags",
-              "internal/frontend-architektur",
-              "internal/background-tasks"
-            ]
-          }
-        ]
+        "default": true,
+        "href": "/"
       },
       {
         "language": "de",
-        "groups": [
-          {
-            "group": "Erste Schritte",
-            "pages": [
-              "de/anmeldung/index"
-            ]
-          },
-          {
-            "group": "Mandatsübersicht",
-            "pages": [
-              "de/mandatsuebersicht/index",
-              "de/mandatsuebersicht/mandat-hinzufuegen",
-              "de/mandatsuebersicht/mandate-verwalten",
-              "de/mandatsuebersicht/sprache-wechseln"
-            ]
-          },
-          {
-            "group": "Auftragsübersicht",
-            "pages": [
-              "de/auftragsuebersicht/index",
-              "de/auftragsuebersicht/auftrag-anlegen",
-              "de/auftragsuebersicht/datei-manager",
-              "de/auftragsuebersicht/datei-exportieren",
-              "de/auftragsuebersicht/zugriffsrechte-verwalten",
-              "de/auftragsuebersicht/edit-modus",
-              "de/auftragsuebersicht/versionsunterschiede"
-            ]
-          },
-          {
-            "group": "ai/checklist",
-            "pages": [
-              "de/checkliste/index",
-              "de/checkliste/vorbereiten",
-              "de/checkliste/bemerkungen-notizen",
-              "de/checkliste/referenzen",
-              "de/checkliste/review",
-              "de/checkliste/hilfreiche-funktionen"
-            ]
-          },
-          {
-            "group": "ai/numbers",
-            "pages": [
-              "de/zahlen/index",
-              "de/zahlen/zahlen-verwalten",
-              "de/zahlen/externe-nachweise",
-              "de/zahlen/kalkulationen",
-              "de/zahlen/interne-konsistenz",
-              "de/zahlen/versionsunterschiede",
-              "de/zahlen/bemerkungen",
-              "de/zahlen/hilfreiche-funktionen",
-              "de/zahlen/review"
-            ]
-          },
-          {
-            "group": "Feedback & Kontakt",
-            "pages": [
-              "de/feedback/index",
-              "de/feedback/kontaktiere-uns",
-              "de/feedback/in-app-feedback"
-            ]
-          },
-          {
-            "group": "Intern",
-            "pages": [
-              "internal/index",
-              "internal/architektur",
-              "internal/api-referenz",
-              "internal/datenmodelle",
-              "internal/ki-services",
-              "internal/auth-berechtigungen",
-              "internal/feature-flags",
-              "internal/frontend-architektur",
-              "internal/background-tasks"
-            ]
-          }
+        "href": "/de"
+      }
+    ],
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "anmeldung/index"
+        ]
+      },
+      {
+        "group": "Clients Overview",
+        "pages": [
+          "mandatsuebersicht/index",
+          "mandatsuebersicht/mandat-hinzufuegen",
+          "mandatsuebersicht/mandate-verwalten",
+          "mandatsuebersicht/sprache-wechseln"
+        ]
+      },
+      {
+        "group": "Assignments Overview",
+        "pages": [
+          "auftragsuebersicht/index",
+          "auftragsuebersicht/auftrag-anlegen",
+          "auftragsuebersicht/datei-manager",
+          "auftragsuebersicht/datei-exportieren",
+          "auftragsuebersicht/zugriffsrechte-verwalten",
+          "auftragsuebersicht/edit-modus",
+          "auftragsuebersicht/versionsunterschiede"
+        ]
+      },
+      {
+        "group": "ai/checklist",
+        "pages": [
+          "checkliste/index",
+          "checkliste/vorbereiten",
+          "checkliste/bemerkungen-notizen",
+          "checkliste/referenzen",
+          "checkliste/review",
+          "checkliste/hilfreiche-funktionen"
+        ]
+      },
+      {
+        "group": "ai/numbers",
+        "pages": [
+          "zahlen/index",
+          "zahlen/zahlen-verwalten",
+          "zahlen/externe-nachweise",
+          "zahlen/kalkulationen",
+          "zahlen/interne-konsistenz",
+          "zahlen/versionsunterschiede",
+          "zahlen/bemerkungen",
+          "zahlen/hilfreiche-funktionen",
+          "zahlen/review"
+        ]
+      },
+      {
+        "group": "Feedback & Contact",
+        "pages": [
+          "feedback/index",
+          "feedback/kontaktiere-uns",
+          "feedback/in-app-feedback"
+        ]
+      },
+      {
+        "group": "Internal",
+        "pages": [
+          "internal/index",
+          "internal/architektur",
+          "internal/api-referenz",
+          "internal/datenmodelle",
+          "internal/ki-services",
+          "internal/auth-berechtigungen",
+          "internal/feature-flags",
+          "internal/frontend-architektur",
+          "internal/background-tasks"
         ]
       }
     ]
