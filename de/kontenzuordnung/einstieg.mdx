@@ -1,0 +1,44 @@
+---
+title: "Erste Schritte mit ai/accounts"
+description: "Überblick über den Workflow der Kontenzuordnung."
+sidebarTitle: "Erste Schritte"
+icon: "play"
+---
+
+## Überblick
+
+Die Kontenzuordnungs-Oberfläche ist in zwei Bereiche aufgeteilt:
+
+- **Linker Bereich — „Offen"**: Zeigt alle noch nicht zugeordneten Konten mit einem blauen Zähler. Jede Kontokarte zeigt KI-Vorschläge, die Sie akzeptieren oder ablehnen können.
+- **Rechter Bereich — „Zugeordnet"**: Zeigt alle erfolgreich zugeordneten Konten in einem hierarchischen Taxonomiebaum mit einem grünen Zähler.
+
+## Workflow
+
+<Steps>
+  <Step title="Initialisierung des Auftrags">
+    Beim Öffnen eines Kontenzuordnungs-Auftrags lädt das System alle Konten aus der Saldenliste. Die KI analysiert die Konten automatisch und generiert Zuordnungsvorschläge.
+  </Step>
+  <Step title="KI-Verarbeitung">
+    Ein Ladedialog zeigt den Fortschritt in vier Phasen:
+    1. „Konten werden analysiert"
+    2. „Konten werden zugeordnet"
+    3. „Zuordnungsergebnisse werden validiert"
+    4. „Ergebnisse werden vorbereitet"
+  </Step>
+  <Step title="Vorschläge prüfen">
+    Nach der KI-Verarbeitung werden Konten mit sicheren Übereinstimmungen automatisch zugeordnet. Verbleibende Konten zeigen Vorschläge, die Sie akzeptieren, ablehnen oder überschreiben können.
+  </Step>
+  <Step title="Prioritätskonten zuordnen">
+    Prioritätskonten sind hervorgehoben und sollten zuerst zugeordnet werden. Nutzen Sie den Button **„Zum Prioritätskonto springen"**, um direkt zum nächsten nicht zugeordneten Prioritätskonto zu navigieren.
+  </Step>
+  <Step title="Zielwerte hinzufügen (optional)">
+    Für bessere KI-Genauigkeit importieren Sie **Zielwerte** — erwartete Summen pro Taxonomieposition. Die KI nutzt diese zur mathematischen Validierung und Verbesserung ihrer Vorschläge.
+  </Step>
+  <Step title="KI erneut ausführen (optional)">
+    Nach der Zuordnung von Prioritätskonten oder dem Hinzufügen von Zielwerten klicken Sie auf **„KI-Zuordnung"**, um die KI mit den aktualisierten Informationen erneut auszuführen.
+  </Step>
+</Steps>
+
+<Tip>
+Nach der KI-Verarbeitung zeigt ein Erfolgsdialog, wie viele Konten automatisch zugeordnet wurden und wie viele Vorschläge vorliegen. Folgen Sie den Hinweisen, um Prioritätskonten zuzuordnen und Zielwerte für die besten Ergebnisse hinzuzufügen.
+</Tip>

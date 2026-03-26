@@ -1,0 +1,47 @@
+---
+title: "Target Values"
+description: "Import target values to improve AI mapping accuracy."
+sidebarTitle: "Target Values"
+icon: "bullseye"
+---
+
+## What Are Target Values?
+
+Target values are the expected totals per taxonomy position. When provided, the AI uses mathematical matching to validate its proposals — significantly improving accuracy.
+
+<Note>
+Target values enable the AI to automatically assign accounts to their corresponding taxonomy positions. The target value comparison is carried out with a precision of two decimal places.
+</Note>
+
+## Import Target Values
+
+<Steps>
+  <Step title="Open the dialog">
+    Click **"Add target values"** at the bottom of the unmapped accounts panel.
+  </Step>
+  <Step title="Enter values">
+    The dialog shows a table with all taxonomy positions. For each position, enter the expected **current year** and **previous year** values.
+  </Step>
+  <Step title="Save">
+    Values are saved automatically as you type. Press **Enter** to move to the next cell.
+  </Step>
+</Steps>
+
+## Calculated Values
+
+When a taxonomy position has child positions with target values, the parent value is automatically calculated from the sum of its children. These are marked with a **"Calculated"** indicator.
+
+## Re-run AI After Adding Targets
+
+After entering target values, click the **"AI Mapping"** button in the unmapped accounts panel to re-run the AI with the new information. The AI will use mathematical matching to validate its proposals against your target values.
+
+<Tip>
+Adding target values often resolves the majority of remaining unmapped accounts in a single AI re-run.
+</Tip>
+
+## Delete Target Values
+
+To remove target values:
+- Click **"Delete Target Values"** to clear all entered values
+- Click **"Delete File"** to remove an uploaded target values file
+- A confirmation dialog will appear before deletion

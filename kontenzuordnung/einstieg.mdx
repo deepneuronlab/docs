@@ -1,0 +1,44 @@
+---
+title: "Getting Started with ai/accounts"
+description: "Overview of the account mapping workflow."
+sidebarTitle: "Getting Started"
+icon: "play"
+---
+
+## Overview
+
+The account mapping interface is split into two panels:
+
+- **Left panel — "Open"**: Shows all unmapped accounts with a blue count badge. Each account card displays AI proposals you can accept or reject.
+- **Right panel — "Mapped"**: Shows all successfully mapped accounts in a hierarchical taxonomy tree with a green count badge.
+
+## Workflow
+
+<Steps>
+  <Step title="Assignment Initialization">
+    When you open an account mapping assignment, the system loads all accounts from the trial balance. The AI automatically analyzes accounts and generates mapping proposals.
+  </Step>
+  <Step title="AI Processing">
+    A loading dialog shows progress through four stages:
+    1. "Accounts get analyzed"
+    2. "Mapping accounts"
+    3. "Mapping results get validated"
+    4. "Results get prepared"
+  </Step>
+  <Step title="Review Proposals">
+    After AI processing completes, accounts with confident matches are automatically mapped. Remaining accounts show proposals you can accept, reject, or override.
+  </Step>
+  <Step title="Map Priority Accounts">
+    Priority accounts are highlighted and should be mapped first. Use the **"Jump to priority account"** button to navigate directly to the next unmapped priority account. A progress bar shows how many priorities have been mapped.
+  </Step>
+  <Step title="Add Target Values (optional)">
+    For better AI accuracy, import **target values** — expected totals per taxonomy position. The AI uses these to validate and improve its proposals via mathematical matching.
+  </Step>
+  <Step title="Re-run AI (optional)">
+    After mapping priority accounts or adding target values, click **"AI Mapping"** to re-run the AI with the updated information. This often resolves remaining unmapped accounts.
+  </Step>
+</Steps>
+
+<Tip>
+After AI processing, a success dialog shows how many accounts were automatically mapped and how many have suggestions. Follow the hints to map priority accounts and add target values for the best results.
+</Tip>

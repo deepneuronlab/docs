@@ -73,6 +73,18 @@
         ]
       },
       {
+        "group": "ai/accounts",
+        "pages": [
+          "kontenzuordnung/index",
+          "kontenzuordnung/einstieg",
+          "kontenzuordnung/unmapped",
+          "kontenzuordnung/mapped",
+          "kontenzuordnung/target-values",
+          "kontenzuordnung/filters",
+          "kontenzuordnung/hybrid"
+        ]
+      },
+      {
         "group": "Feedback & Contact",
         "pages": [
           "feedback/index",
