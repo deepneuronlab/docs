@@ -62,6 +62,30 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 | PATCH | `/companies/{cid}/assignments/{id}/users` | Benutzer zuweisen |
 | GET | `/companies/{cid}/assignments/{id}/details` | Details abrufen |
 
+## Zuweisungskriterien (Assignment Criteria)
+
+Beim Erstellen oder Aktualisieren von Aufträgen werden die Zuweisungskriterien validiert. Ungültige Kombinationen liefern einen `FormCombinationError` mit HTTP 422:
+
+```json
+{
+  "error_type": "FormCombinationError",
+  "fields": ["isFinancialInstitute", "isInsurance"],
+  "msg": "Ein Unternehmen kann nicht gleichzeitig ein Finanzinstitut und eine Versicherung sein"
+}
+```
+
+**Validierungsregeln:**
+
+| Kombination | Ergebnis |
+|---|---|
+| `isFinancialInstitute` + `isInsurance` | Fehler — gegenseitig ausschließend |
+| `isInstitute` + `isInsurance` | Fehler — gegenseitig ausschließend |
+| `incomeStatementOperatingResultType` = `GKV` + `size` ≠ `small` | Fehler |
+
+<Note>
+Das `msg`-Feld in der Fehlerantwort ist optional und enthält eine benutzerlesbare Fehlermeldung, wenn verfügbar.
+</Note>
+
 ## Checkliste (Questions)
 
 | Methode | Pfad | Beschreibung |
