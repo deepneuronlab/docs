@@ -1,6 +1,6 @@
 ---
 title: "KI-Services"
-description: "Übersicht der KI/ML-Services: Pythia, Delphi, Spectra, Mentat."
+description: "Übersicht der KI/ML-Services: Delphi, Spectra, Mentat."
 sidebarTitle: "KI-Services"
 icon: "brain"
 groups: ["internal"]
@@ -9,9 +9,9 @@ hidden: false
 
 ## Übersicht
 
-Notes Auditor nutzt vier spezialisierte KI-Services:
+Notes Auditor nutzt drei spezialisierte KI-Services:
 
-## 1. Delphi — LLM-Dokumentenanalyse
+## Delphi — LLM-Dokumentenanalyse
 
 **Port:** 3211 | **Python:** 3.11
 
@@ -28,7 +28,7 @@ Delphi nutzt Retrieval-Augmented Generation (RAG) zur Analyse von Prüfungsdokum
 
 **Prompts:** Lokalisiert (de/en) in `delphi/src/delphi/prompts/`
 
-## 2. Spectra — Zahlenerkennung
+## Spectra — Zahlenerkennung
 
 **Port:** 5379 | **Python:** 3.12
 
@@ -44,16 +44,7 @@ Spectra erkennt finanzielle Zahlen in Dokumenten und extrahiert deren Attribute.
 
 **Operationen:** +, −, ×, ÷, Δ% (prozentuale Änderung)
 
-## 3. Pythia — ML-Scoring
-
-**Port:** 5378 | **Python:** 3.10
-
-Pythia bietet Binärklassifikation (Ja/Nein) für Checklisten-Fragen, basierend auf historischen Antwort-Daten.
-
-**Inputs:** Frage + Dokumentkontext
-**Outputs:** Wahrscheinlichkeits-Score für Ja/Nein
-
-## 4. Mentat — Kontenzuordnung
+## Mentat — Kontenzuordnung
 
 **Port:** 3212 | **Python:** 3.11
 
@@ -83,7 +74,6 @@ Mentat ordnet Konten aus der Buchhaltung den Positionen in der Taxonomie zu. Nut
 ## Konfiguration (Environment Variables)
 
 ```
-ENABLE_PYTHIA_PREDICTIONS=false
 ENABLE_SPECTRA_PREDICTIONS=true
 ENABLE_DELPHI_PREDICTIONS=true
 ENABLE_MENTAT_PREDICTIONS=true
@@ -98,4 +88,3 @@ ENABLE_LLM_DIFF_CLASSIFICATIONS=true
 |---|---|
 | Spectra | 3000s |
 | Delphi | 900s |
-| Pythia | 300s |

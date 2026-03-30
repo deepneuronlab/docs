@@ -49,7 +49,7 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 |---|---|---|
 | assignment_id | FK → Assignment | Zugehöriger Auftrag |
 | text | string | Fragetext |
-| ai_model | enum | pythia, llm |
+| ai_model | enum | llm |
 | flow_status | enum | unedited, auditing, audited, reviewing, reviewed |
 | answer | string? | Antwort (yes, no, n.a.) |
 | references | M2M → Reference | Verknüpfte Referenzen |
