@@ -97,9 +97,58 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 |---|---|---|
 | GET | `/document/{id}/references` | Referenzen abrufen |
 | GET | `/document/{id}/edit` | Kommentare & Änderungsvorschläge |
-| GET | `/document/{id}/diff` | Versionsunterschiede |
+| GET | `/document/{id}/diff` | Versionsunterschiede (Legacy) |
 | PATCH | `/document/{id}/edit` | Änderungen speichern |
 | GET | `/pdf/{id}` | PDF-Inhalt abrufen |
+
+## Versionsvergleich (Diff)
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/companies/{cid}/assignments/{aid}/document/{docId}/diff` | Versionsunterschiede für ein Dokument innerhalb eines Auftrags abrufen |
+
+### Request-Parameter
+
+| Parameter | Typ | Beschreibung |
+|---|---|---|
+| `cid` | string (path) | Company-ID |
+| `aid` | string (path) | Assignment-ID |
+| `docId` | string (path) | Document-ID des neueren Dokuments |
+
+### Response
+
+Die Antwort kann in zwei Formaten vorliegen:
+
+**Lifecycle-Format** (neu):
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `state` | enum | Verarbeitungsstatus: `not_started`, `in_progress`, `ready`, `failed` |
+| `new_document_id` | string | ID des neueren Dokuments |
+| `old_document_id` | string | ID des älteren Dokuments |
+| `new_annotations` | object | Annotationen im neueren Dokument (Map: Annotation-ID → Eintrag) |
+| `old_annotations` | object | Annotationen im älteren Dokument (Map: Annotation-ID → Eintrag) |
+
+Jeder Annotations-Eintrag enthält:
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `kind` | enum | Art der Änderung: `added`, `deleted`, `unchanged` |
+| `classification` | enum \| null | Klassifikation: `editorial`, `substantive_expected`, `substantive_unexpected` |
+| `annotation` | object | Annotations-Details (Position, Text, Bounding-Box, verknüpfte IDs) |
+
+**Legacy-Format** (veraltet):
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `newTextAnnotations` | array | Neue Text-Annotationen |
+| `deletedTextComments` | array | Gelöschte Text-Kommentare |
+
+### WebSocket-Event
+
+| Event | Payload | Beschreibung |
+|---|---|---|
+| `document_diff_ready` | `{ assignment: string, document_id: string }` | Wird ausgelöst, wenn die Diff-Berechnung abgeschlossen ist |
 
 ## Export
 
