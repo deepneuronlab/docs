@@ -74,6 +74,22 @@ Modularer Store in `src/store/modules/`:
 - Reconnection: Max 5 Versuche, 1-5s exponentieller Backoff
 - Multi-Tab-Sync via BroadcastChannel API
 
+### Shared-state update contract
+
+The shared-state payload supports two contract modes:
+
+- **Legacy snapshot** — sends full arrays for references, annotations, selections, and numbers state. The `annotationDeltas` field (type `AnnotationDeltasByDocument`) can be included to deliver incremental annotation changes per document without resending the complete annotation list.
+- **Incremental patch** (`contractVersion: 1`, `contractMode: "incremental"`) — sends only changed sections via `referencesDelta`, `selectionDelta`, `highlightDelta`, and `numbersDelta`, each carrying a `version` counter.
+
+### Annotation deltas
+
+Routine PDF annotation updates (e.g. adding, moving, or removing highlights during the numbers flow) now use `annotationDeltas` instead of replacing the full annotation array. Each delta contains a per-document `revision` counter and a `mode`:
+
+- **`incremental`** — only the annotations in `toCreate`, `toUpdate`, and `toDelete` are applied.
+- **`rebuild`** — all existing annotations for the document are discarded and replaced by `toCreate`.
+
+The receiver skips a delta whose `revision` is not greater than the last handled revision, which prevents stale updates after reconnects.
+
 ## Composables (36)
 
 Wichtigste: `useAuditFlowState`, `useFileUpload`, `useNumbersFlowLoader`, `usePopoutWindow`, `useSocketReconnection`, `useTabSync`, `useVersionChecker`
