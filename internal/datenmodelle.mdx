@@ -60,10 +60,14 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 | assignment_id | FK | Zugehöriger Auftrag |
 | pdf_id | FK | Dokument |
 | question_id | FK | Verknüpfte Frage |
-| start_offset, end_offset | int | Position im Dokument |
+| start_offset, end_offset | int | Zeichenposition im Dokument-Text |
 | page_index | int | Seitenzahl |
 | state | enum | accepted, proposal, fallback, rejected |
 | consistency | string? | Konsistenzstatus |
+
+<Note>
+`start_offset` and `end_offset` are persisted in the annotation `custom_data` at creation time and during re-referencing. Historic references without offsets are back-filled lazily on read or via the `backfill_reference_offsets_task`.
+</Note>
 
 ### CheckedNumber (Geprüfte Zahl)
 | Feld | Typ | Beschreibung |
