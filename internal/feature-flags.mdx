@@ -29,6 +29,17 @@ Features werden über die `Feature`-Entität pro Gruppe aktiviert/deaktiviert. V
 | `ENABLE_LLM_CALCULATIONS_PREDICTIONS` | true | LLM-basierte Kalkulationsprüfung |
 | `ENABLE_LLM_DIFF_CLASSIFICATIONS` | true | LLM-basierte Diff-Klassifikation |
 
+## LLM-Concurrency-Einstellungen
+
+| Variable | Default | Beschreibung |
+|---|---|---|
+| `LLM_CALCULATIONS_MAX_CONCURRENT_DOCUMENTS` | 1 | Maximale Anzahl gleichzeitig verarbeiteter Dokumente bei der Kalkulationserkennung |
+| `LLM_CALCULATIONS_MAX_CONCURRENT_REQUESTS` | 4 | Maximale Anzahl gleichzeitiger LLM-Anfragen pro Dokument-Batch |
+
+<Note>
+  Die gesamte Anzahl gleichzeitiger LLM-Anfragen ergibt sich aus Dokumente × Anfragen. Beide Werte werden auf mindestens 1 begrenzt.
+</Note>
+
 ## Infrastruktur Feature Flags
 
 | Variable | Default | Beschreibung |

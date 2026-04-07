@@ -27,7 +27,7 @@ Zwei getrennte Queues für unterschiedliche Workloads:
 
 | Task | Beschreibung |
 |---|---|
-| `update_calculations_of_new_assignment_task` | Kalkulationen aktualisieren |
+| `update_calculations_of_new_assignment_task` | Kalkulationen aktualisieren (parallel, gesteuert über `LLM_CALCULATIONS_MAX_CONCURRENT_DOCUMENTS` und `LLM_CALCULATIONS_MAX_CONCURRENT_REQUESTS`) |
 | `recreate_questionnaire_from_edited_criteria_task` | Checkliste neu generieren |
 | `remove_duplicate_number_references_task` | Duplikate bereinigen |
 
