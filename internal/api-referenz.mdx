@@ -72,6 +72,10 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 
 **Flow-Status:** `UNEDITED` → `AUDITING` → `AUDITED` → `REVIEWING` → `REVIEWED`
 
+<Note>
+Fragen und Steuerungsfragen sind versionsabhängig. Die Version wird bei der Auftragserstellung automatisch anhand der aktiven Checklistenversion bestimmt. Bestehende Aufträge können per Autoupgrade auf eine neuere Version migriert werden, wobei Antworten für unveränderte Fragen erhalten bleiben.
+</Note>
+
 ## Zahlenprüfung (Checked Numbers)
 
 | Methode | Pfad | Beschreibung |
@@ -114,3 +118,18 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 ## Externe API (`/api` Prefix)
 
 Vereinfachte API für externe Clients mit API-Key-Authentifizierung. Endpunkte: Auth, Company, Assignment, Checklist, Taxonomy.
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| POST | `/auth/login` | Login mit API-Key |
+| GET | `/checklists/types` | Unterstützte Checklistentypen |
+| GET | `/checklists/{checklist_type}` | Steuerungsfragen einer Checkliste abrufen |
+| GET | `/companies/{cid}/assignments` | Aufträge auflisten |
+| POST | `/companies/{cid}/assignments` | Auftrag erstellen |
+| PATCH | `/companies/{cid}/assignments/{id}` | Auftrag aktualisieren |
+| DELETE | `/companies/{cid}/assignments/{id}` | Auftrag löschen |
+| POST | `/companies/{cid}/assignments/search` | Aufträge durchsuchen |
+
+<Note>
+Der Endpunkt `GET /checklists/{checklist_type}` gibt Steuerungsfragen basierend auf der aktuell aktiven Version der Checkliste zurück. Wenn sich die aktive Version ändert, können sich die verfügbaren Steuerungsfragen und deren Validierungsregeln ändern.
+</Note>
