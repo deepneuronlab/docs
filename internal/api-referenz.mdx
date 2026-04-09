@@ -20,6 +20,19 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 | PUT | `/users/{id}` | Benutzer aktualisieren |
 | PUT | `/users/locale` | Sprache ändern |
 
+**`PUT /users/locale`** – Akzeptierte Werte für `locale`:
+
+| Locale | Sprache |
+|---|---|
+| `de-DE` | Deutsch |
+| `en-GB` | English |
+| `fr-FR` | Français |
+| `it-IT` | Italiano |
+| `es-ES` | Español |
+| `pt-PT` | Português |
+
+Request-Body: `{ "locale": "<locale>" }`. Standardwert bei ungültigem Locale: `en-GB`.
+
 ## OIDC / SSO
 
 | Methode | Pfad | Beschreibung |
