@@ -20,6 +20,19 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 | PUT | `/users/{id}` | Benutzer aktualisieren |
 | PUT | `/users/locale` | Sprache ändern |
 
+**`PUT /users/locale`** – Akzeptierte Werte für `locale`:
+
+| Locale | Sprache |
+|---|---|
+| `de-DE` | Deutsch |
+| `en-GB` | English |
+| `fr-FR` | Français |
+| `it-IT` | Italiano |
+| `es-ES` | Español |
+| `pt-PT` | Português |
+
+Request-Body: `{ "locale": "<locale>" }`. Standardwert bei ungültigem Locale: `en-GB`.
+
 ## OIDC / SSO
 
 | Methode | Pfad | Beschreibung |
@@ -61,6 +74,86 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 | PATCH | `/companies/{cid}/assignments/{id}/status` | Status ändern |
 | PATCH | `/companies/{cid}/assignments/{id}/users` | Benutzer zuweisen |
 | GET | `/companies/{cid}/assignments/{id}/details` | Details abrufen |
+| POST | `/companies/{cid}/assignments/{id}/copy` | Auftrag kopieren |
+
+### Auftrag kopieren
+
+Erstellt eine vollständige Kopie eines bestehenden Auftrags, einschließlich aller zugehörigen Daten (Dateien, Fragen, geprüfte Zahlen, Referenzen, Benutzer).
+
+**Endpunkt:** `POST /anexo/companies/{company_id}/assignments/{assignment_id}/copy`
+
+**Berechtigungen:** Der Benutzer benötigt Zugriff auf das Quell-Mandat, muss dem Auftrag zugewiesen oder Gruppenadmin sein und die Berechtigung `can_create_assignments` besitzen. Bei Angabe eines Ziel-Mandats ist zusätzlich Zugriff auf dieses erforderlich.
+
+**Request Body (JSON):**
+
+| Feld | Typ | Pflicht | Beschreibung |
+|---|---|---|---|
+| `targetCompanyId` | `string (UUID)` | Nein | Ziel-Mandat für die Kopie. Standard: gleiches Mandat. |
+| `name` | `string` | Nein | Name des kopierten Auftrags. |
+| `assignmentNumber` | `string` | Nein | Auftragsnummer des kopierten Auftrags. |
+| `balanceSheetDate` | `string (date)` | Nein | Bilanzstichtag im Format `YYYY-MM-DD`. |
+
+**Beispiel-Request:**
+
+```json
+{
+  "targetCompanyId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "name": "Kopie Jahresabschluss 2025",
+  "assignmentNumber": "A-2025-042",
+  "balanceSheetDate": "2025-12-31"
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "assignmentId": "f9e8d7c6-b5a4-3210-fedc-ba0987654321"
+  }
+}
+```
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `data.assignmentId` | `string (UUID)` | ID des neu erstellten Auftrags. |
+
+**Fehlercodes:**
+
+| Status | Bedingung |
+|---|---|
+| 401 | Nicht authentifiziert |
+| 403 | Berechtigung `can_create_assignments` fehlt |
+| 240 | Eindeutigkeitsverletzung – Name, Auftragsnummer oder Bilanzstichtag kollidiert mit einem bestehenden Auftrag |
+| 551 | Auftrag nicht gefunden |
+| 552 | Mandat nicht gefunden |
+| 553 | Kein Zugriff auf das (Ziel-)Mandat |
+| 557 | Kein Zugriff auf den Auftrag |
+
+## Zuweisungskriterien (Assignment Criteria)
+
+Beim Erstellen oder Aktualisieren von Aufträgen werden die Zuweisungskriterien validiert. Ungültige Kombinationen liefern einen `FormCombinationError` mit HTTP 422:
+
+```json
+{
+  "error_type": "FormCombinationError",
+  "fields": ["isFinancialInstitute", "isInsurance"],
+  "msg": "Ein Unternehmen kann nicht gleichzeitig ein Finanzinstitut und eine Versicherung sein"
+}
+```
+
+**Validierungsregeln:**
+
+| Kombination | Ergebnis |
+|---|---|
+| `isFinancialInstitute` + `isInsurance` | Fehler — gegenseitig ausschließend |
+| `isInstitute` + `isInsurance` | Fehler — gegenseitig ausschließend |
+| `incomeStatementOperatingResultType` = `GKV` + `size` ≠ `small` | Fehler |
+
+<Note>
+Das `msg`-Feld in der Fehlerantwort ist optional und enthält eine benutzerlesbare Fehlermeldung, wenn verfügbar.
+</Note>
 
 ## Checkliste (Questions)
 
@@ -71,6 +164,10 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 | PATCH | `/assignments/{aid}/questions/{id}` | Antwort aktualisieren |
 
 **Flow-Status:** `UNEDITED` → `AUDITING` → `AUDITED` → `REVIEWING` → `REVIEWED`
+
+<Note>
+Fragen und Steuerungsfragen sind versionsabhängig. Die Version wird bei der Auftragserstellung automatisch anhand der aktiven Checklistenversion bestimmt. Bestehende Aufträge können per Autoupgrade auf eine neuere Version migriert werden, wobei Antworten für unveränderte Fragen erhalten bleiben.
+</Note>
 
 ## Zahlenprüfung (Checked Numbers)
 
@@ -97,7 +194,7 @@ Alle Endpunkte nutzen das Prefix `/anexo`. Authentifizierung erfolgt via Bearer 
 |---|---|---|
 | GET | `/document/{id}/references` | Referenzen abrufen |
 | GET | `/document/{id}/edit` | Kommentare & Änderungsvorschläge |
-| GET | `/document/{id}/diff` | Versionsunterschiede |
+| GET | `/document/{id}/diff` | Versionsunterschiede (Legacy) |
 | PATCH | `/document/{id}/edit` | Änderungen speichern |
 | GET | `/pdf/{id}` | PDF-Inhalt abrufen |
 
@@ -116,6 +213,54 @@ Annotation objects returned by reference endpoints include a `customData` object
 <Note>
 `start_offset` and `end_offset` are computed at reference creation time and during re-referencing. They may be `null` for historic references that have not yet been back-filled.
 </Note>
+## Versionsvergleich (Diff)
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| GET | `/companies/{cid}/assignments/{aid}/document/{docId}/diff` | Versionsunterschiede für ein Dokument innerhalb eines Auftrags abrufen |
+
+### Request-Parameter
+
+| Parameter | Typ | Beschreibung |
+|---|---|---|
+| `cid` | string (path) | Company-ID |
+| `aid` | string (path) | Assignment-ID |
+| `docId` | string (path) | Document-ID des neueren Dokuments |
+
+### Response
+
+Die Antwort kann in zwei Formaten vorliegen:
+
+**Lifecycle-Format** (neu):
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `state` | enum | Verarbeitungsstatus: `not_started`, `in_progress`, `ready`, `failed` |
+| `new_document_id` | string | ID des neueren Dokuments |
+| `old_document_id` | string | ID des älteren Dokuments |
+| `new_annotations` | object | Annotationen im neueren Dokument (Map: Annotation-ID → Eintrag) |
+| `old_annotations` | object | Annotationen im älteren Dokument (Map: Annotation-ID → Eintrag) |
+
+Jeder Annotations-Eintrag enthält:
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `kind` | enum | Art der Änderung: `added`, `deleted`, `unchanged` |
+| `classification` | enum \| null | Klassifikation: `editorial`, `substantive_expected`, `substantive_unexpected` |
+| `annotation` | object | Annotations-Details (Position, Text, Bounding-Box, verknüpfte IDs) |
+
+**Legacy-Format** (veraltet):
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `newTextAnnotations` | array | Neue Text-Annotationen |
+| `deletedTextComments` | array | Gelöschte Text-Kommentare |
+
+### WebSocket-Event
+
+| Event | Payload | Beschreibung |
+|---|---|---|
+| `document_diff_ready` | `{ assignment: string, document_id: string }` | Wird ausgelöst, wenn die Diff-Berechnung abgeschlossen ist |
 
 ## Export
 
@@ -130,3 +275,18 @@ Annotation objects returned by reference endpoints include a `customData` object
 ## Externe API (`/api` Prefix)
 
 Vereinfachte API für externe Clients mit API-Key-Authentifizierung. Endpunkte: Auth, Company, Assignment, Checklist, Taxonomy.
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| POST | `/auth/login` | Login mit API-Key |
+| GET | `/checklists/types` | Unterstützte Checklistentypen |
+| GET | `/checklists/{checklist_type}` | Steuerungsfragen einer Checkliste abrufen |
+| GET | `/companies/{cid}/assignments` | Aufträge auflisten |
+| POST | `/companies/{cid}/assignments` | Auftrag erstellen |
+| PATCH | `/companies/{cid}/assignments/{id}` | Auftrag aktualisieren |
+| DELETE | `/companies/{cid}/assignments/{id}` | Auftrag löschen |
+| POST | `/companies/{cid}/assignments/search` | Aufträge durchsuchen |
+
+<Note>
+Der Endpunkt `GET /checklists/{checklist_type}` gibt Steuerungsfragen basierend auf der aktuell aktiven Version der Checkliste zurück. Wenn sich die aktive Version ändert, können sich die verfügbaren Steuerungsfragen und deren Validierungsregeln ändern.
+</Note>
