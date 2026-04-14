@@ -198,6 +198,21 @@ Fragen und Steuerungsfragen sind versionsabhängig. Die Version wird bei der Auf
 | PATCH | `/document/{id}/edit` | Änderungen speichern |
 | GET | `/pdf/{id}` | PDF-Inhalt abrufen |
 
+### Annotation `customData` fields
+
+Annotation objects returned by reference endpoints include a `customData` object with the following fields:
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| type | string | `"number"` oder `"highlight"` |
+| text | string | Angezeigter Text |
+| documentId | string | Zugehöriges Dokument (UUID) |
+| start_offset | int? | Start-Zeichenposition im Seitentext |
+| end_offset | int? | End-Zeichenposition im Seitentext |
+
+<Note>
+`start_offset` and `end_offset` are computed at reference creation time and during re-referencing. They may be `null` for historic references that have not yet been back-filled.
+</Note>
 ## Versionsvergleich (Diff)
 
 | Methode | Pfad | Beschreibung |
