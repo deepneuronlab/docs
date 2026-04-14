@@ -11,7 +11,23 @@ A new version of an audit document or a supporting document can be uploaded to t
 
 By clicking **"Upload Documents"** in the top right corner of the File Manager, the user can choose to add a **new version** of an **audit document** or a **supporting document.** Next to all listed documents, the button **"Upload a new version"** allows adding a document directly from the computer.
 
-The app automatically highlights differences between document versions. With the tab **"View Version Differences"** above the document view, relevant changes within the document can be toggled on or off. All changes will be highlighted in **pink.** Clicking on the highlighted text or figures opens the respective question in the checklist section.
+The app automatically highlights differences between document versions. With the tab **"View Version Differences"** above the document view, you can enter the compare flow to review changes side by side.
+
+### Compare flow
+
+When you open the compare flow, the app displays both document versions side by side with synchronized scrolling. If multiple document pairs are available, you first select which pair to compare.
+
+Differences are classified into three categories:
+
+- **Editorial** — Minor wording or formatting changes
+- **Substantive (expected)** — Material changes that were anticipated
+- **Substantive (unexpected)** — Material changes that require closer review
+
+You can filter the displayed annotations by classification using the filter controls in the compare toolbar. Annotations are highlighted in both document panes, and clicking an annotation scrolls the opposite pane to the corresponding change.
+
+<Note>
+The diff comparison may take a moment to process. A loading indicator is shown while the comparison is being prepared. The processing status progresses through `not_started`, `in_progress`, and `ready`. If processing fails, the status is set to `failed` and you can retry.
+</Note>
 
 This functionality ensures that all changes between document versions are clearly visible and can be reviewed.
 

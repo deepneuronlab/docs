@@ -74,6 +74,27 @@ Modularer Store in `src/store/modules/`:
 - Reconnection: Max 5 Versuche, 1-5s exponentieller Backoff
 - Multi-Tab-Sync via BroadcastChannel API
 
+### Shared-state patch contract
+
+Die Kommunikation zwischen Haupt- und Popout-Fenster nutzt ein typisiertes Patch-Protokoll für die Zustandssynchronisierung. Es gibt zwei Modi:
+
+**Legacy-Modus (Standard):** Sendet den vollständigen Zustand als Snapshot bei jeder Aktualisierung. Alle Felder werden bei jeder Nachricht übertragen.
+
+**Inkrementeller Modus** (aktiviert via `incrementalSharedStatePatch` Feature Flag): Sendet nur geänderte Felder als Delta-Updates. Jede Nachricht enthält:
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `contractVersion` | `1` | Protokollversion |
+| `contractMode` | `'incremental'` | Identifiziert inkrementelle Nachrichten |
+| `referencesDelta` | object? | Delta für Dokument-Referenzen mit `reset`, `version`, `documents` und `changedDocumentIds` |
+| `selectionDelta` | object? | Delta für Auswahl-Zustand (fokussierte, selektierte und bearbeitete Annotationen) |
+| `highlightDelta` | object? | Delta für Highlight-Zustand (Hover und markierte Annotationen) |
+| `numbersDelta` | object? | Delta für Zahlenprüfungs-Zustand |
+
+Skalare Felder (z.B. `viewMode`, `activePageIndex`, `mode`) werden in beiden Modi direkt auf der obersten Ebene der Nachricht übertragen.
+
+Zusätzlich unterstützt das Protokoll Action-Updates für Befehle wie `findAndChangeDocumentTab`, `updatePageIndex`, `resetInteractionMode` und `closeFileManagerDialog`.
+
 ## Composables (36)
 
 Wichtigste: `useAuditFlowState`, `useFileUpload`, `useNumbersFlowLoader`, `usePopoutWindow`, `useSocketReconnection`, `useTabSync`, `useVersionChecker`

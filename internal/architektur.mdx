@@ -16,7 +16,6 @@ Notes Auditor besteht aus mehreren spezialisierten Python-Services:
 | **anexo** | 2846 | 3.10 | Haupt-Backend (FastAPI) — API, Business Logic, Auth |
 | **external_api** | 2855 | 3.10 | Öffentliche API für externe Integrationen |
 | **delphi** | 3211 | 3.11 | LLM-basierte Dokumentenanalyse mit RAG (Qdrant) |
-| **pythia** | 5378 | 3.10 | ML-Scoring-Service (Binärklassifikation) |
 | **spectra** | 5379 | 3.12 | Zahlenerkennung und Attribut-Extraktion |
 | **mentat** | 3212 | 3.11 | Kontenzuordnung (6-Stufen-Matching) |
 | **document_converter** | 4741 | 3.9 | DOCX→PDF-Konvertierung (LibreOffice) |
@@ -39,6 +38,14 @@ Notes Auditor besteht aus mehreren spezialisierten Python-Services:
 - **Mailgun** — E-Mail-Versand
 - **Sentry** — Error Tracking
 - **InfluxDB** — Metriken
+
+## Checklisten-Versionierung
+
+Checklisten unterstützen mehrere Versionen (z. B. `initial`, `2026_01`, `2026_02`). Jede Checkliste hat eine **aktive Version**, die festlegt, welche Fragen und Steuerungsfragen für neue Aufträge verwendet werden.
+
+- **Versionsauflösung:** Beim Erstellen eines Auftrags wird die aktive Version der Checkliste gespeichert. Bestehende Aufträge behalten ihre Version.
+- **Autoupgrade:** Wenn eine Upgrade-Kette konfiguriert ist, werden bestehende Aufträge beim nächsten Zugriff automatisch auf die neuere Version migriert. Antworten für unveränderte Fragen bleiben erhalten, neue Fragen werden als unbeantwortet hinzugefügt.
+- **Umgebungsspezifische Versionen:** Pro Deployment-Umgebung (z. B. Produktion, Test) kann eine abweichende Version konfiguriert werden.
 
 ## Kommunikation
 
