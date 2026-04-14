@@ -74,21 +74,26 @@ Modularer Store in `src/store/modules/`:
 - Reconnection: Max 5 Versuche, 1-5s exponentieller Backoff
 - Multi-Tab-Sync via BroadcastChannel API
 
-### Shared-state update contract
+### Shared-state patch contract
 
-The shared-state payload supports two contract modes:
+Die Kommunikation zwischen Haupt- und Popout-Fenster nutzt ein typisiertes Patch-Protokoll für die Zustandssynchronisierung. Es gibt zwei Modi:
 
-- **Legacy snapshot** — sends full arrays for references, annotations, selections, and numbers state. The `annotationDeltas` field (type `AnnotationDeltasByDocument`) can be included to deliver incremental annotation changes per document without resending the complete annotation list.
-- **Incremental patch** (`contractVersion: 1`, `contractMode: "incremental"`) — sends only changed sections via `referencesDelta`, `selectionDelta`, `highlightDelta`, and `numbersDelta`, each carrying a `version` counter.
+**Legacy-Modus (Standard):** Sendet den vollständigen Zustand als Snapshot bei jeder Aktualisierung. Alle Felder werden bei jeder Nachricht übertragen.
 
-### Annotation deltas
+**Inkrementeller Modus** (aktiviert via `incrementalSharedStatePatch` Feature Flag): Sendet nur geänderte Felder als Delta-Updates. Jede Nachricht enthält:
 
-Routine PDF annotation updates (e.g. adding, moving, or removing highlights during the numbers flow) now use `annotationDeltas` instead of replacing the full annotation array. Each delta contains a per-document `revision` counter and a `mode`:
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `contractVersion` | `1` | Protokollversion |
+| `contractMode` | `'incremental'` | Identifiziert inkrementelle Nachrichten |
+| `referencesDelta` | object? | Delta für Dokument-Referenzen mit `reset`, `version`, `documents` und `changedDocumentIds` |
+| `selectionDelta` | object? | Delta für Auswahl-Zustand (fokussierte, selektierte und bearbeitete Annotationen) |
+| `highlightDelta` | object? | Delta für Highlight-Zustand (Hover und markierte Annotationen) |
+| `numbersDelta` | object? | Delta für Zahlenprüfungs-Zustand |
 
-- **`incremental`** — only the annotations in `toCreate`, `toUpdate`, and `toDelete` are applied.
-- **`rebuild`** — all existing annotations for the document are discarded and replaced by `toCreate`.
+Skalare Felder (z.B. `viewMode`, `activePageIndex`, `mode`) werden in beiden Modi direkt auf der obersten Ebene der Nachricht übertragen.
 
-The receiver skips a delta whose `revision` is not greater than the last handled revision, which prevents stale updates after reconnects.
+Zusätzlich unterstützt das Protokoll Action-Updates für Befehle wie `findAndChangeDocumentTab`, `updatePageIndex`, `resetInteractionMode` und `closeFileManagerDialog`.
 
 ## Composables (36)
 

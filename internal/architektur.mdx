@@ -40,6 +40,14 @@ Notes Auditor besteht aus mehreren spezialisierten Python-Services:
 - **Sentry** — Error Tracking
 - **InfluxDB** — Metriken
 
+## Checklisten-Versionierung
+
+Checklisten unterstützen mehrere Versionen (z. B. `initial`, `2026_01`, `2026_02`). Jede Checkliste hat eine **aktive Version**, die festlegt, welche Fragen und Steuerungsfragen für neue Aufträge verwendet werden.
+
+- **Versionsauflösung:** Beim Erstellen eines Auftrags wird die aktive Version der Checkliste gespeichert. Bestehende Aufträge behalten ihre Version.
+- **Autoupgrade:** Wenn eine Upgrade-Kette konfiguriert ist, werden bestehende Aufträge beim nächsten Zugriff automatisch auf die neuere Version migriert. Antworten für unveränderte Fragen bleiben erhalten, neue Fragen werden als unbeantwortet hinzugefügt.
+- **Umgebungsspezifische Versionen:** Pro Deployment-Umgebung (z. B. Produktion, Test) kann eine abweichende Version konfiguriert werden.
+
 ## Kommunikation
 
 - **REST API** — Synchrone Client-Server-Kommunikation
