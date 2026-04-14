@@ -19,7 +19,7 @@ hidden: false
 | role | string? | Benutzerdefinierte Rolle |
 | is_group_admin | bool | Gruppenadmin-Rechte |
 | is_external_api_user | bool | Externer API-Zugriff |
-| locale | string | Spracheinstellung (de-DE, en-GB, etc.) |
+| locale | string | Spracheinstellung (de-DE, en-GB, sv-SE, cs-CZ, es-ES, fr-FR, it-IT, pt-PT) |
 | identity_provider | string? | SSO-Provider (azure, mazars) |
 | identity_provider_id | string? | Provider-spezifische ID |
 
@@ -33,6 +33,13 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 | company_number | string | Mandatsnummer (unique pro Gruppe) |
 | group_id | FK → Group | Zugehörige Gruppe |
 | is_deleted | bool | Soft Delete |
+
+### Checklist (Checkliste)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| name | string | Interner Name (unique) |
+| display_name | string | Anzeigename (unique) |
+| active_version | string | Aktive Versionskennung (Default: `initial`). Bestimmt, welche Fragenversion und welche Steuerungsfragen für neue Aufträge verwendet werden. |
 
 ### Assignment (Auftrag)
 | Feld | Typ | Beschreibung |
@@ -60,10 +67,14 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 | assignment_id | FK | Zugehöriger Auftrag |
 | pdf_id | FK | Dokument |
 | question_id | FK | Verknüpfte Frage |
-| start_offset, end_offset | int | Position im Dokument |
+| start_offset, end_offset | int | Zeichenposition im Dokument-Text |
 | page_index | int | Seitenzahl |
 | state | enum | accepted, proposal, fallback, rejected |
 | consistency | string? | Konsistenzstatus |
+
+<Note>
+`start_offset` and `end_offset` are persisted in the annotation `custom_data` at creation time and during re-referencing. Historic references without offsets are back-filled lazily on read or via the `backfill_reference_offsets_task`.
+</Note>
 
 ### CheckedNumber (Geprüfte Zahl)
 | Feld | Typ | Beschreibung |
@@ -83,16 +94,72 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 | name | string | Dateiname |
 | file_type | string | Dokumenttyp |
 | status | enum | pending, processing, ready, error |
+| previousVersionDocumentId | string \| null | ID der vorherigen Version |
+| previousVersionName | string \| null | Name der vorherigen Version |
+| nextVersionDocumentId | string \| null | ID der nächsten Version |
+| nextVersionName | string \| null | Name der nächsten Version |
+| hasDiff | bool | Versionsvergleich verfügbar |
+| documentDiffs | FileDocumentDiff[] | Explizite Diff-Metadaten (optional) |
+
+### FileDocumentDiff
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| id | string | Eindeutige Diff-ID |
+| fileBeforeId | string | ID des älteren Dokuments |
+| fileBeforeName | string \| null | Name des älteren Dokuments |
+| fileAfterId | string | ID des neueren Dokuments |
+| fileAfterName | string \| null | Name des neueren Dokuments |
+| state | enum | Verarbeitungsstatus: `not_started`, `in_progress`, `ready`, `failed` |
+| createdAt | datetime | Erstellungszeitpunkt |
+| updatedAt | datetime | Letzte Aktualisierung |
+
+### DocumentDiff (Versionsvergleich)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| new_document_id | string | ID des neueren Dokuments |
+| old_document_id | string | ID des älteren Dokuments |
+| state | enum | Verarbeitungsstatus: `not_started`, `in_progress`, `ready`, `failed` |
+| new_annotations | Map | Annotationen im neueren Dokument |
+| old_annotations | Map | Annotationen im älteren Dokument |
+
+Jede Diff-Annotation enthält:
+- **kind**: `added`, `deleted` oder `unchanged`
+- **classification**: `editorial`, `substantive_expected` oder `substantive_unexpected`
+- **annotation**: Position (pageIndex, boundingBox, rects), Text und verknüpfte IDs
+
+### CompletedAssignmentCriteriaForm (Steuerungsfragen)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| name | string? | Name des Auftrags |
+| balance_sheet_date | date? | Bilanzstichtag |
+| checklist | FK → Checklist | Verknüpfte Checkliste |
+| checklist_version | string? | Version der Checkliste zum Zeitpunkt der Erstellung. Wird bei Autoupgrade aktualisiert. |
+| is_complete | bool | Steuerungsfragen vollständig beantwortet |
+| criteria_values | JSON | Beantwortete Steuerungsfragen |
+| visible_criteria_keys | JSON | Sichtbare Steuerungsfragen-Schlüssel |
+
+### AnnotationDeltaPayload
+
+Represents an incremental update to PDF annotations for a single document, used for efficient real-time synchronization instead of transmitting the full annotation array.
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| revision | number | Monotonically increasing revision counter per document |
+| mode | `"incremental"` \| `"rebuild"` | `incremental` applies only the listed changes; `rebuild` replaces all annotations |
+| toCreate | AnnotationText[] | Annotations to add |
+| toUpdate | AnnotationText[] | Annotations to modify |
+| toDelete | AnnotationText[] | Annotations to remove |
+
+`AnnotationDeltasByDocument` is a `Record<string, AnnotationDeltaPayload | undefined>` that maps document IDs to their delta payload. It is transmitted as the `annotationDeltas` field inside the shared-state WebSocket update.
 
 ### Weitere Entitäten
 - **Calculation** — Kalkulationen mit Formeln und Komponenten
 - **AccountMapping** — Kontenzuordnungen mit Proposals
 - **PDFComment** — Benutzer-Annotationen im Dokument
 - **ProposedChange** — Änderungsvorschläge
-- **DocumentDiff** — Versionsvergleiche
 - **TimeMachine** — Wiederherstellungspunkte
 - **Export** — Generierte Exportdateien
-- **Checklist** — Checklisten-Templates (40+ verschiedene)
+- **Checklist** — Checklisten-Templates (50+ verschiedene, u.a. BDO, KPMG, Baker Tilly, Grant Thornton, IDW, DNL)
 - **Feature** — Feature Flags pro Gruppe
 
 ## Migrations
