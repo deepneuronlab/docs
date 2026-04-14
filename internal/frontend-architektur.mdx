@@ -36,8 +36,8 @@ hidden: false
 | `/.../review/sorting/:idx` | TheAuditFlowContainer.vue | Checkliste: Review |
 | `/.../audit-numbers` | TheAuditFlowContainer.vue | Zahlen: Vorbereiten |
 | `/.../review-numbers` | TheAuditFlowContainer.vue | Zahlen: Review |
-| `/.../audit-diff` | TheDiffFlow.vue | Diff: Vorbereiten |
-| `/.../review-diff` | TheDiffFlow.vue | Diff: Review |
+| `/.../audit-diff` | ~~TheDiffFlow.vue~~ | Diff: Vorbereiten (deprecated — Route entfernt) |
+| `/.../review-diff` | ~~TheDiffFlow.vue~~ | Diff: Review (deprecated — Route entfernt) |
 | `/:cid/:aid/account-mapping` | AccountMapping.vue | Kontenzuordnung |
 
 ## State Management
@@ -63,7 +63,7 @@ Modularer Store in `src/store/modules/`:
 |---|---|---|
 | TheNumbersFlow.vue | 181KB | Zahlenprüfung (größte Komponente) |
 | TheChecklistFlow.vue | 125KB | Checklisten-Prüfung |
-| TheDiffFlow.vue | 52KB | Versionsvergleich |
+| ~~TheDiffFlow.vue~~ | ~~52KB~~ | Versionsvergleich (deprecated — Komponente entfernt) |
 | AccountMapping.vue | 34KB | Kontenzuordnung |
 
 ## WebSocket
