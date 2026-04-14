@@ -134,6 +134,20 @@ Jede Diff-Annotation enthält:
 | criteria_values | JSON | Beantwortete Steuerungsfragen |
 | visible_criteria_keys | JSON | Sichtbare Steuerungsfragen-Schlüssel |
 
+### AnnotationDeltaPayload
+
+Represents an incremental update to PDF annotations for a single document, used for efficient real-time synchronization instead of transmitting the full annotation array.
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| revision | number | Monotonically increasing revision counter per document |
+| mode | `"incremental"` \| `"rebuild"` | `incremental` applies only the listed changes; `rebuild` replaces all annotations |
+| toCreate | AnnotationText[] | Annotations to add |
+| toUpdate | AnnotationText[] | Annotations to modify |
+| toDelete | AnnotationText[] | Annotations to remove |
+
+`AnnotationDeltasByDocument` is a `Record<string, AnnotationDeltaPayload | undefined>` that maps document IDs to their delta payload. It is transmitted as the `annotationDeltas` field inside the shared-state WebSocket update.
+
 ### Weitere Entitäten
 - **Calculation** — Kalkulationen mit Formeln und Komponenten
 - **AccountMapping** — Kontenzuordnungen mit Proposals
