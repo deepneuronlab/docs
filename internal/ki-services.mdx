@@ -44,6 +44,65 @@ Spectra erkennt finanzielle Zahlen in Dokumenten und extrahiert deren Attribute.
 
 **Operationen:** +, −, ×, ÷, Δ% (prozentuale Änderung)
 
+### Spectra-Endpunkte
+
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| POST | `/search-numbers` | Zahlen im Dokument finden (Regex, kein KI) |
+| POST | `/analyze-numbers` | Attribute für Zahlen bestimmen (via OpenAI) |
+| POST | `/propose-evidences` | Nachweise zwischen Audit- und Support-Zahlen vorschlagen |
+| POST | `/calculate_consistency` | Konsistenz zwischen zwei Zahlen berechnen |
+| GET | `/healthcheck` | Health-Check |
+| GET | `/readiness` | Readiness-Probe mit Speicher-Prüfung |
+
+### Unterstützte Dokumentformate
+
+Spectra unterstützt die folgenden Dokumentformate über den `document_format`-Parameter:
+
+| Format | Wert | Hinweise |
+|---|---|---|
+| PDF | `pdf` | Standard-Dokumentformat |
+| Excel | `excel` | `text` und `paragraphs` müssen leer sein; Tabellen müssen Zellen enthalten |
+| Word | `word` | — |
+
+### Unterstützte Sprachen (Locale)
+
+| Locale | Wert |
+|---|---|
+| Deutsch | `de-DE` |
+| Englisch | `en-GB` |
+| Schwedisch | `sv-SE` |
+| Tschechisch | `cs-CZ` |
+
+### Zahlen-Attribute (`NumberAttributes`)
+
+Jede erkannte Zahl kann folgende Attribute haben:
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `multiplier` | enum | Multiplikator: `1`, `1000`, `1000000`, `1000000000`, `1000000000000`. Ungültige Werte werden auf `null` zurückgesetzt. |
+| `kind` | enum | Art der Zahl: `money`, `percentage`, `count`, `unknown`, `temporal`, `document_reference` |
+| `entity` | string? | Beschreibung der Bedeutung (z.B. „Anzahl Mitarbeiter") |
+| `date` | string? | Bezugsdatum (z.B. `2024-12-31`) |
+| `numeric_value` | decimal? | Mathematischer Wert (z.B. 10 TEUR → `10000`) |
+
+<Note>
+  Wenn `kind` den Wert `percentage` hat, wird `multiplier` automatisch auf `1` (ONE) gesetzt. Dies verhindert fehlerhafte Berechnungen bei prozentualen Werten.
+</Note>
+
+### Nachweis-Vorschlag (`/propose-evidences`)
+
+Der Endpunkt unterstützt sowohl **externe** als auch **interne Nachweise**:
+
+- **Externe Nachweise:** Audit-Zahlen aus einem Prüfungsdokument werden mit Zahlen aus Support-Dokumenten abgeglichen.
+- **Interne Nachweise:** Wenn das Audit-Dokument auch in `support_documents` enthalten ist, werden transitive Verbindungen automatisch berechnet (z.B. wenn A↔B und B↔C, dann auch A↔C).
+
+Jeder Nachweis hat einen `reference_state` (`proposal` oder `accepted`) und eine `consistency` (`consistent`, `inconsistent` oder `none`). Bei transitiven Verbindungen gilt die konservativste Bewertung.
+
+### Konsistenzprüfung (`/calculate_consistency`)
+
+Prüft ob zwei Zahlen (Audit und Support) numerisch konsistent sind, basierend auf ihren Attributen. Fehlende Attribute werden aus dem Text abgeleitet. Gibt `consistent` oder `inconsistent` zurück.
+
 ## 3. Pythia — ML-Scoring
 
 **Port:** 5378 | **Python:** 3.10
@@ -90,6 +149,8 @@ ENABLE_MENTAT_PREDICTIONS=true
 ENABLE_STD_CALCULATIONS_PREDICTIONS=true
 ENABLE_LLM_CALCULATIONS_PREDICTIONS=true
 ENABLE_LLM_DIFF_CLASSIFICATIONS=true
+LLM_CALCULATIONS_MAX_CONCURRENT_DOCUMENTS=1
+LLM_CALCULATIONS_MAX_CONCURRENT_REQUESTS=4
 ```
 
 ## Timeouts
