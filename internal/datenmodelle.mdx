@@ -34,6 +34,13 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 | group_id | FK → Group | Zugehörige Gruppe |
 | is_deleted | bool | Soft Delete |
 
+### Checklist (Checkliste)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| name | string | Interner Name (unique) |
+| display_name | string | Anzeigename (unique) |
+| active_version | string | Aktive Versionskennung (Default: `initial`). Bestimmt, welche Fragenversion und welche Steuerungsfragen für neue Aufträge verwendet werden. |
+
 ### Assignment (Auftrag)
 | Feld | Typ | Beschreibung |
 |---|---|---|
@@ -84,6 +91,17 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 | file_type | string | Dokumenttyp |
 | status | enum | pending, processing, ready, error |
 
+### CompletedAssignmentCriteriaForm (Steuerungsfragen)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| name | string? | Name des Auftrags |
+| balance_sheet_date | date? | Bilanzstichtag |
+| checklist | FK → Checklist | Verknüpfte Checkliste |
+| checklist_version | string? | Version der Checkliste zum Zeitpunkt der Erstellung. Wird bei Autoupgrade aktualisiert. |
+| is_complete | bool | Steuerungsfragen vollständig beantwortet |
+| criteria_values | JSON | Beantwortete Steuerungsfragen |
+| visible_criteria_keys | JSON | Sichtbare Steuerungsfragen-Schlüssel |
+
 ### Weitere Entitäten
 - **Calculation** — Kalkulationen mit Formeln und Komponenten
 - **AccountMapping** — Kontenzuordnungen mit Proposals
@@ -92,7 +110,6 @@ Organisationseinheit. Steuert Zugriff auf Checklisten und Features via M2M-Relat
 - **DocumentDiff** — Versionsvergleiche
 - **TimeMachine** — Wiederherstellungspunkte
 - **Export** — Generierte Exportdateien
-- **Checklist** — Checklisten-Templates (40+ verschiedene)
 - **Feature** — Feature Flags pro Gruppe
 
 ## Migrations
