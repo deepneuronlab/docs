@@ -1,0 +1,64 @@
+---
+title: "System Architecture"
+description: "Overview of microservices, infrastructure, and communication."
+sidebarTitle: "Architecture"
+icon: "diagram-project"
+groups: ["internal"]
+hidden: false
+---
+
+## Microservices Architecture
+
+Notes Auditor consists of several specialized Python services:
+
+| Service | Port | Python | Description |
+|---|---|---|---|
+| **anexo** | 2846 | 3.10 | Main backend (FastAPI) — API, business logic, auth |
+| **external_api** | 2855 | 3.10 | Public API for external integrations |
+| **delphi** | 3211 | 3.11 | LLM-based document analysis with RAG (Qdrant) |
+| **spectra** | 5379 | 3.12 | Number detection and attribute extraction |
+| **mentat** | 3212 | 3.11 | Account mapping (6-stage matching) |
+| **document_converter** | 4741 | 3.9 | DOCX→PDF conversion (LibreOffice) |
+
+## Infrastructure
+
+| Component | Port | Purpose |
+|---|---|---|
+| **PostgreSQL** | 5432 | Primary database |
+| **Redis** | 6379 | Cache, task queue, WebSocket state, locks (6 DBs) |
+| **Qdrant** | 6333 | Vector database (embeddings) |
+| **Phoenix** | 6006 | OpenTelemetry tracing |
+
+## External Services
+
+- **Azure OpenAI** — Chat Completions (GPT-4.1), Embeddings (text-embedding-3-large)
+- **Azure Blob Storage** — Document storage
+- **Azure Form Recognizer** — OCR, table recognition
+- **LiteLLM Gateway** (optional) — Proxy for cost optimization
+- **Mailgun** — Email delivery
+- **Sentry** — Error tracking
+- **InfluxDB** — Metrics
+
+## Checklist Versioning
+
+Checklists support multiple versions (e.g., `initial`, `2026_01`, `2026_02`). Each checklist has an **active version** that determines which questions and control questions are used for new assignments.
+
+- **Version resolution:** When creating an assignment, the active version of the checklist is stored. Existing assignments retain their version.
+- **Auto-upgrade:** If an upgrade chain is configured, existing assignments are automatically migrated to the newer version on next access. Answers for unchanged questions are preserved; new questions are added as unanswered.
+- **Environment-specific versions:** A different version can be configured per deployment environment (e.g., production, test).
+
+## Communication
+
+- **REST API** — Synchronous client-server communication
+- **WebSocket (Socket.IO)** — Real-time updates (assignment status, file processing, AI analysis)
+- **Huey (Redis)** — Asynchronous task queue (I/O-intensive + CPU-intensive)
+- **Aioredlock** — Distributed locks for concurrency control
+
+## Frontend Tech Stack
+
+- **Vue 3** with Vite, TypeScript
+- **Shoelace + Tailwind CSS** — UI components
+- **Nutrient SDK** — PDF viewer
+- **Syncfusion** — Word/Excel editors
+- **Socket.IO Client** — Real-time updates
+- **vue-i18n** — Internationalization

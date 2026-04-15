@@ -12,98 +12,184 @@
       {
         "language": "en",
         "default": true,
-        "href": "/"
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "getting-started/index.en"
+            ]
+          },
+          {
+            "group": "Clients Overview",
+            "pages": [
+              "clients-overview/index.en",
+              "clients-overview/add-client.en",
+              "clients-overview/manage-clients.en",
+              "clients-overview/switch-language.en"
+            ]
+          },
+          {
+            "group": "Assignments Overview",
+            "pages": [
+              "assignments-overview/index.en",
+              "assignments-overview/create-assignment.en",
+              "assignments-overview/file-manager.en",
+              "assignments-overview/export-file.en",
+              "assignments-overview/manage-access.en",
+              "assignments-overview/edit-mode.en",
+              "assignments-overview/version-differences.en"
+            ]
+          },
+          {
+            "group": "Checklist",
+            "pages": [
+              "checklist/index.en",
+              "checklist/prepare.en",
+              "checklist/remarks-notes.en",
+              "checklist/references.en",
+              "checklist/review.en",
+              "checklist/helpful-features.en"
+            ]
+          },
+          {
+            "group": "Numbers",
+            "pages": [
+              "numbers/index.en",
+              "numbers/manage-numbers.en",
+              "numbers/external-evidence.en",
+              "numbers/calculations.en",
+              "numbers/internal-consistency.en",
+              "numbers/version-differences.en",
+              "numbers/remarks.en",
+              "numbers/helpful-features.en",
+              "numbers/review.en"
+            ]
+          },
+          {
+            "group": "Account Mapping",
+            "pages": [
+              "account-mapping/index.en",
+              "account-mapping/getting-started.en",
+              "account-mapping/unmapped.en",
+              "account-mapping/mapped.en",
+              "account-mapping/target-values.en",
+              "account-mapping/filters.en",
+              "account-mapping/hybrid.en"
+            ]
+          },
+          {
+            "group": "Feedback & Contact",
+            "pages": [
+              "feedback/index.en",
+              "feedback/contact-us.en",
+              "feedback/in-app-feedback.en"
+            ]
+          },
+          {
+            "group": "Internal",
+            "pages": [
+              "internal/index.en",
+              "internal/architecture.en",
+              "internal/api-reference.en",
+              "internal/data-models.en",
+              "internal/ai-services.en",
+              "internal/auth-permissions.en",
+              "internal/feature-flags.en",
+              "internal/frontend-architecture.en",
+              "internal/background-tasks.en"
+            ]
+          }
+        ]
       },
       {
         "language": "de",
-        "href": "/de"
-      }
-    ],
-    "groups": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "anmeldung/index"
-        ]
-      },
-      {
-        "group": "Clients Overview",
-        "pages": [
-          "mandatsuebersicht/index",
-          "mandatsuebersicht/mandat-hinzufuegen",
-          "mandatsuebersicht/mandate-verwalten",
-          "mandatsuebersicht/sprache-wechseln"
-        ]
-      },
-      {
-        "group": "Assignments Overview",
-        "pages": [
-          "auftragsuebersicht/index",
-          "auftragsuebersicht/auftrag-anlegen",
-          "auftragsuebersicht/datei-manager",
-          "auftragsuebersicht/datei-exportieren",
-          "auftragsuebersicht/zugriffsrechte-verwalten",
-          "auftragsuebersicht/edit-modus",
-          "auftragsuebersicht/versionsunterschiede"
-        ]
-      },
-      {
-        "group": "ai/checklist",
-        "pages": [
-          "checkliste/index",
-          "checkliste/vorbereiten",
-          "checkliste/bemerkungen-notizen",
-          "checkliste/referenzen",
-          "checkliste/review",
-          "checkliste/hilfreiche-funktionen"
-        ]
-      },
-      {
-        "group": "ai/numbers",
-        "pages": [
-          "zahlen/index",
-          "zahlen/zahlen-verwalten",
-          "zahlen/externe-nachweise",
-          "zahlen/kalkulationen",
-          "zahlen/interne-konsistenz",
-          "zahlen/versionsunterschiede",
-          "zahlen/bemerkungen",
-          "zahlen/hilfreiche-funktionen",
-          "zahlen/review"
-        ]
-      },
-      {
-        "group": "ai/accounts",
-        "pages": [
-          "kontenzuordnung/index",
-          "kontenzuordnung/einstieg",
-          "kontenzuordnung/unmapped",
-          "kontenzuordnung/mapped",
-          "kontenzuordnung/target-values",
-          "kontenzuordnung/filters",
-          "kontenzuordnung/hybrid"
-        ]
-      },
-      {
-        "group": "Feedback & Contact",
-        "pages": [
-          "feedback/index",
-          "feedback/kontaktiere-uns",
-          "feedback/in-app-feedback"
-        ]
-      },
-      {
-        "group": "Internal",
-        "pages": [
-          "internal/index",
-          "internal/architektur",
-          "internal/api-referenz",
-          "internal/datenmodelle",
-          "internal/ki-services",
-          "internal/auth-berechtigungen",
-          "internal/feature-flags",
-          "internal/frontend-architektur",
-          "internal/background-tasks"
+        "groups": [
+          {
+            "group": "Erste Schritte",
+            "pages": [
+              "getting-started/index.de"
+            ]
+          },
+          {
+            "group": "Mandatsübersicht",
+            "pages": [
+              "clients-overview/index.de",
+              "clients-overview/add-client.de",
+              "clients-overview/manage-clients.de",
+              "clients-overview/switch-language.de"
+            ]
+          },
+          {
+            "group": "Auftragsübersicht",
+            "pages": [
+              "assignments-overview/index.de",
+              "assignments-overview/create-assignment.de",
+              "assignments-overview/file-manager.de",
+              "assignments-overview/export-file.de",
+              "assignments-overview/manage-access.de",
+              "assignments-overview/edit-mode.de",
+              "assignments-overview/version-differences.de"
+            ]
+          },
+          {
+            "group": "Checkliste",
+            "pages": [
+              "checklist/index.de",
+              "checklist/prepare.de",
+              "checklist/remarks-notes.de",
+              "checklist/references.de",
+              "checklist/review.de",
+              "checklist/helpful-features.de"
+            ]
+          },
+          {
+            "group": "Zahlen",
+            "pages": [
+              "numbers/index.de",
+              "numbers/manage-numbers.de",
+              "numbers/external-evidence.de",
+              "numbers/calculations.de",
+              "numbers/internal-consistency.de",
+              "numbers/version-differences.de",
+              "numbers/remarks.de",
+              "numbers/helpful-features.de",
+              "numbers/review.de"
+            ]
+          },
+          {
+            "group": "Kontenzuordnung",
+            "pages": [
+              "account-mapping/index.de",
+              "account-mapping/getting-started.de",
+              "account-mapping/unmapped.de",
+              "account-mapping/mapped.de",
+              "account-mapping/target-values.de",
+              "account-mapping/filters.de",
+              "account-mapping/hybrid.de"
+            ]
+          },
+          {
+            "group": "Feedback & Kontakt",
+            "pages": [
+              "feedback/index.de",
+              "feedback/contact-us.de",
+              "feedback/in-app-feedback.de"
+            ]
+          },
+          {
+            "group": "Intern",
+            "pages": [
+              "internal/index.de",
+              "internal/architecture.de",
+              "internal/api-reference.de",
+              "internal/data-models.de",
+              "internal/ai-services.de",
+              "internal/auth-permissions.de",
+              "internal/feature-flags.de",
+              "internal/frontend-architecture.de",
+              "internal/background-tasks.de"
+            ]
+          }
         ]
       }
     ]

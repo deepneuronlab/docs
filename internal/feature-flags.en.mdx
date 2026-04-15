@@ -1,0 +1,60 @@
+---
+title: "Feature Flags"
+description: "Feature management and configuration per group."
+sidebarTitle: "Feature Flags"
+icon: "flag"
+groups: ["internal"]
+hidden: false
+---
+
+## Overview
+
+Feature flags control the availability of features per organizational group. They are configured via the admin panel or environment variables.
+
+## Group-Specific Features
+
+Features are enabled/disabled per group via the `Feature` entity. Management via:
+- **Admin Panel:** `/admin/features/group/{id}` and `/admin/features/toggle`
+- **API:** `GET /features` for the current user
+
+### Frontend Feature Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `aiAssistantFull` | false | Full AI assistant |
+| `dualDocumentModeFull` | false | Dual document view |
+| `mathematicalValidationPreview` | false | Calculation validation preview |
+| `numericalInternalConsistency` | false | Internal consistency check for numbers |
+| `excelSupportingFiles` | false | Excel files as supporting documents |
+| `incrementalSharedStatePatch` | false | Incremental shared-state patches for popout window synchronization. Sends only changed fields instead of full snapshots. |
+| `timeMachine` | false | Restore points |
+
+## AI Service Feature Flags (Environment)
+
+| Variable | Default | Description |
+|---|---|---|
+| `ENABLE_SPECTRA_PREDICTIONS` | true | Number detection and attribute extraction |
+| `ENABLE_DELPHI_PREDICTIONS` | true | LLM-based document analysis |
+| `ENABLE_MENTAT_PREDICTIONS` | true | Account mapping |
+| `ENABLE_STD_CALCULATIONS_PREDICTIONS` | true | Standard calculation validation |
+| `ENABLE_LLM_CALCULATIONS_PREDICTIONS` | true | LLM-based calculation validation |
+| `ENABLE_LLM_DIFF_CLASSIFICATIONS` | true | LLM-based diff classification (deprecated — diff feature removed from frontend) |
+
+## LLM Concurrency Settings
+
+| Variable | Default | Description |
+|---|---|---|
+| `LLM_CALCULATIONS_MAX_CONCURRENT_DOCUMENTS` | 1 | Maximum number of documents processed concurrently during calculation detection |
+| `LLM_CALCULATIONS_MAX_CONCURRENT_REQUESTS` | 4 | Maximum number of concurrent LLM requests per document batch |
+
+<Note>
+  The total number of concurrent LLM requests is documents x requests. Both values are clamped to a minimum of 1.
+</Note>
+
+## Infrastructure Feature Flags
+
+| Variable | Default | Description |
+|---|---|---|
+| `ENABLE_FILE_CACHE` | true | Enable file caching |
+| `ENABLE_METRICS` | false | Prometheus metrics |
+| `ENABLE_LITELLM_GATEWAY` | false | LiteLLM proxy for Azure OpenAI |

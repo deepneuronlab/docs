@@ -1,0 +1,168 @@
+---
+title: "Data Models"
+description: "Database schema and main application entities."
+sidebarTitle: "Data Models"
+icon: "database"
+groups: ["internal"]
+hidden: false
+---
+
+## Core Entities
+
+### User
+| Field | Type | Description |
+|---|---|---|
+| email | string | Email address (unique) |
+| hashed_password | string | Hashed password |
+| full_name | string | Full name |
+| group_id | FK → Group | Organizational group |
+| role | string? | Custom role |
+| is_group_admin | bool | Group admin privileges |
+| is_external_api_user | bool | External API access |
+| locale | string | Language setting (de-DE, en-GB, sv-SE, cs-CZ, es-ES, fr-FR, it-IT, pt-PT) |
+| identity_provider | string? | SSO provider (azure, mazars) |
+| identity_provider_id | string? | Provider-specific ID |
+
+### Group
+Organizational unit. Controls access to checklists and features via M2M relations.
+
+### Company (Client)
+| Field | Type | Description |
+|---|---|---|
+| name | string | Client name |
+| company_number | string | Client number (unique per group) |
+| group_id | FK → Group | Associated group |
+| is_deleted | bool | Soft delete |
+
+### Checklist
+| Field | Type | Description |
+|---|---|---|
+| name | string | Internal name (unique) |
+| display_name | string | Display name (unique) |
+| active_version | string | Active version identifier (default: `initial`). Determines which question version and control questions are used for new assignments. |
+
+### Assignment
+| Field | Type | Description |
+|---|---|---|
+| company_id | FK → Company | Associated client |
+| checklist_id | FK → Checklist | Used checklist |
+| product_type | enum | notes, mngmt_report, sustainability_report, account_mapping, numerical_audit |
+| status | enum | incomplete, in_progress, completed, draft, deleted |
+| processing_status | enum | pending, ready, error |
+| progress | int (0-100) | Progress percentage |
+
+### Question (Checklist Question)
+| Field | Type | Description |
+|---|---|---|
+| assignment_id | FK → Assignment | Associated assignment |
+| text | string | Question text |
+| ai_model | enum | llm |
+| flow_status | enum | unedited, auditing, audited, reviewing, reviewed |
+| answer | string? | Answer (yes, no, n.a.) |
+| references | M2M → Reference | Linked references |
+
+### Reference (Document Reference)
+| Field | Type | Description |
+|---|---|---|
+| assignment_id | FK | Associated assignment |
+| pdf_id | FK | Document |
+| question_id | FK | Linked question |
+| start_offset, end_offset | int | Character position in document text |
+| page_index | int | Page number |
+| state | enum | accepted, proposal, fallback, rejected |
+| consistency | string? | Consistency status |
+
+<Note>
+`start_offset` and `end_offset` are persisted in the annotation `custom_data` at creation time and during re-referencing. Historic references without offsets are back-filled lazily on read or via the `backfill_reference_offsets_task`.
+</Note>
+
+### CheckedNumber
+| Field | Type | Description |
+|---|---|---|
+| assignment_id | FK | Associated assignment |
+| pdf_id | FK | Document |
+| value | decimal | Numeric value |
+| kind | enum | number, total, subtotal |
+| currency | string? | Currency |
+| references | M2M → Reference | External evidence |
+
+### FileMetadata (Document)
+| Field | Type | Description |
+|---|---|---|
+| assignment_id | FK | Associated assignment |
+| s3_key | string | Azure Blob Storage key |
+| name | string | Filename |
+| file_type | string | Document type |
+| status | enum | pending, processing, ready, error |
+| previousVersionDocumentId | string \| null | ID of the previous version |
+| previousVersionName | string \| null | Name of the previous version |
+| nextVersionDocumentId | string \| null | ID of the next version |
+| nextVersionName | string \| null | Name of the next version |
+| hasDiff | bool | Version comparison available |
+| documentDiffs | FileDocumentDiff[] | Explicit diff metadata (optional) |
+
+### FileDocumentDiff
+| Field | Type | Description |
+|---|---|---|
+| id | string | Unique diff ID |
+| fileBeforeId | string | ID of the older document |
+| fileBeforeName | string \| null | Name of the older document |
+| fileAfterId | string | ID of the newer document |
+| fileAfterName | string \| null | Name of the newer document |
+| state | enum | Processing status: `not_started`, `in_progress`, `ready`, `failed` |
+| createdAt | datetime | Creation timestamp |
+| updatedAt | datetime | Last update |
+
+### DocumentDiff (Version Comparison)
+| Field | Type | Description |
+|---|---|---|
+| new_document_id | string | ID of the newer document |
+| old_document_id | string | ID of the older document |
+| state | enum | Processing status: `not_started`, `in_progress`, `ready`, `failed` |
+| new_annotations | Map | Annotations in the newer document |
+| old_annotations | Map | Annotations in the older document |
+
+Each diff annotation contains:
+- **kind**: `added`, `deleted`, or `unchanged`
+- **classification**: `editorial`, `substantive_expected`, or `substantive_unexpected`
+- **annotation**: Position (pageIndex, boundingBox, rects), text, and linked IDs
+
+### CompletedAssignmentCriteriaForm (Control Questions)
+| Field | Type | Description |
+|---|---|---|
+| name | string? | Assignment name |
+| balance_sheet_date | date? | Balance sheet date |
+| checklist | FK → Checklist | Linked checklist |
+| checklist_version | string? | Checklist version at creation time. Updated on auto-upgrade. |
+| is_complete | bool | Control questions fully answered |
+| criteria_values | JSON | Answered control questions |
+| visible_criteria_keys | JSON | Visible control question keys |
+
+### AnnotationDeltaPayload
+
+Represents an incremental update to PDF annotations for a single document, used for efficient real-time synchronization instead of transmitting the full annotation array.
+
+| Field | Type | Description |
+|---|---|---|
+| revision | number | Monotonically increasing revision counter per document |
+| mode | `"incremental"` \| `"rebuild"` | `incremental` applies only the listed changes; `rebuild` replaces all annotations |
+| toCreate | AnnotationText[] | Annotations to add |
+| toUpdate | AnnotationText[] | Annotations to modify |
+| toDelete | AnnotationText[] | Annotations to remove |
+
+`AnnotationDeltasByDocument` is a `Record<string, AnnotationDeltaPayload | undefined>` that maps document IDs to their delta payload. It is transmitted as the `annotationDeltas` field inside the shared-state WebSocket update.
+
+### Additional Entities
+- **Calculation** — Calculations with formulas and components
+- **AccountMapping** — Account mappings with proposals
+- **PDFComment** — User annotations in documents
+- **ProposedChange** — Proposed changes
+- **DocumentDiff** — Version comparisons (deprecated — no longer used by frontend)
+- **TimeMachine** — Restore points
+- **Export** — Generated export files
+- **Checklist** — Checklist templates (50+ different ones, including BDO, KPMG, Baker Tilly, Grant Thornton, IDW, DNL)
+- **Feature** — Feature flags per group
+
+## Migrations
+
+Aerich (Tortoise ORM). 152+ migration files in `anexo/migrations/models/`.

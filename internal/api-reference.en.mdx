@@ -1,0 +1,293 @@
+---
+title: "API Reference"
+description: "Complete overview of all backend API endpoints."
+sidebarTitle: "API Reference"
+icon: "code"
+groups: ["internal"]
+hidden: false
+---
+
+All endpoints use the `/anexo` prefix. Authentication is via Bearer Token (OAuth2).
+
+## Authentication & Users
+
+| Method | Path | Description |
+|---|---|---|
+| POST | `/swagger-auth/login` | Login |
+| POST | `/users/register` | Registration |
+| POST | `/users/reset-password` | Reset password |
+| GET | `/users` | List users |
+| PUT | `/users/{id}` | Update user |
+| PUT | `/users/locale` | Change language (de-DE, en-GB, sv-SE, cs-CZ, es-ES, fr-FR, it-IT, pt-PT) |
+
+**`PUT /users/locale`** – Accepted values for `locale`:
+
+| Locale | Language |
+|---|---|
+| `de-DE` | Deutsch |
+| `en-GB` | English |
+| `fr-FR` | Français |
+| `it-IT` | Italiano |
+| `es-ES` | Español |
+| `pt-PT` | Português |
+
+Request body: `{ "locale": "<locale>" }`. Default value for invalid locale: `en-GB`.
+
+## OIDC / SSO
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/azure/login-uri` | Azure AD login redirect |
+| GET | `/mazars/login-uri` | Mazars login redirect |
+
+## Admin Panel
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/admin/groups/list` | List groups |
+| POST | `/admin/groups/create` | Create group |
+| POST | `/admin/users/create-bulk` | Bulk create users |
+| POST | `/admin/users/verify` | Verify user |
+| PATCH | `/admin/users/{id}/toggle-active` | Activate/deactivate user |
+| PATCH | `/admin/users/{id}/toggle-group-admin` | Toggle group admin |
+| GET | `/admin/checklists/list` | Manage checklists |
+| POST | `/admin/checklists/toggle` | Enable/disable checklist |
+| GET | `/admin/features/group/{id}` | Feature flags per group |
+| POST | `/admin/features/toggle` | Toggle feature flag |
+
+## Clients (Companies)
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/companies` | List clients (with pagination) |
+| POST | `/companies` | Create client |
+| PUT | `/companies/{id}` | Edit client |
+| DELETE | `/companies/{id}` | Delete client |
+
+## Assignments
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/companies/{cid}/assignments` | List assignments |
+| POST | `/companies/{cid}/assignments` | Create assignment |
+| PUT | `/companies/{cid}/assignments/{id}` | Edit assignment |
+| PATCH | `/companies/{cid}/assignments/{id}/status` | Change status |
+| PATCH | `/companies/{cid}/assignments/{id}/users` | Assign users |
+| GET | `/companies/{cid}/assignments/{id}/details` | Get details |
+| POST | `/companies/{cid}/assignments/{id}/copy` | Copy assignment |
+
+### Copy Assignment
+
+Creates a complete copy of an existing assignment, including all associated data (files, questions, checked numbers, references, users).
+
+**Endpoint:** `POST /anexo/companies/{company_id}/assignments/{assignment_id}/copy`
+
+**Permissions:** The user needs access to the source client, must be assigned to the assignment or be a group admin, and must have the `can_create_assignments` permission. If a target client is specified, access to that client is also required.
+
+**Request Body (JSON):**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `targetCompanyId` | `string (UUID)` | No | Target client for the copy. Default: same client. |
+| `name` | `string` | No | Name of the copied assignment. |
+| `assignmentNumber` | `string` | No | Assignment number of the copied assignment. |
+| `balanceSheetDate` | `string (date)` | No | Balance sheet date in `YYYY-MM-DD` format. |
+
+**Example Request:**
+
+```json
+{
+  "targetCompanyId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "name": "Copy Annual Report 2025",
+  "assignmentNumber": "A-2025-042",
+  "balanceSheetDate": "2025-12-31"
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "assignmentId": "f9e8d7c6-b5a4-3210-fedc-ba0987654321"
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `data.assignmentId` | `string (UUID)` | ID of the newly created assignment. |
+
+**Error Codes:**
+
+| Status | Condition |
+|---|---|
+| 401 | Not authenticated |
+| 403 | Missing `can_create_assignments` permission |
+| 240 | Uniqueness violation — name, assignment number, or balance sheet date conflicts with an existing assignment |
+| 551 | Assignment not found |
+| 552 | Client not found |
+| 553 | No access to the (target) client |
+| 557 | No access to the assignment |
+
+## Assignment Criteria
+
+When creating or updating assignments, the assignment criteria are validated. Invalid combinations return a `FormCombinationError` with HTTP 422:
+
+```json
+{
+  "error_type": "FormCombinationError",
+  "fields": ["isFinancialInstitute", "isInsurance"],
+  "msg": "A company cannot be both a financial institute and an insurance company"
+}
+```
+
+**Validation Rules:**
+
+| Combination | Result |
+|---|---|
+| `isFinancialInstitute` + `isInsurance` | Error — mutually exclusive |
+| `isInstitute` + `isInsurance` | Error — mutually exclusive |
+| `incomeStatementOperatingResultType` = `GKV` + `size` ≠ `small` | Error |
+
+<Note>
+The `msg` field in the error response is optional and contains a human-readable error message when available.
+</Note>
+
+## Checklist (Questions)
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/assignments/{aid}/questions` | List questions |
+| GET | `/assignments/{aid}/questions/{id}` | Question details |
+| PATCH | `/assignments/{aid}/questions/{id}` | Update answer |
+
+**Flow Status:** `UNEDITED` → `AUDITING` → `AUDITED` → `REVIEWING` → `REVIEWED`
+
+<Note>
+Questions and control questions are version-dependent. The version is automatically determined based on the active checklist version when creating an assignment. Existing assignments can be auto-upgraded to a newer version, preserving answers for unchanged questions.
+</Note>
+
+## Number Audit (Checked Numbers)
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/companies/{cid}/assignments/{aid}/checked-numbers-tree` | Get number tree |
+| PATCH | `/companies/{cid}/assignments/{aid}/checked-numbers-tree` | Update number |
+| PATCH | `/companies/{cid}/assignments/{aid}/checked-numbers-tree/bulk` | Bulk update |
+
+## File Manager
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/companies/{cid}/assignments/{aid}/file-manager` | List files/folders |
+| POST | `/companies/{cid}/assignments/{aid}/file-manager/{id}/re-referencing` | Update references |
+| POST | `/companies/{cid}/assignments/{aid}/file-manager/{id}/predict-numbers` | Start ML predictions |
+| PATCH | `/companies/{cid}/assignments/{aid}/file-manager/{id}` | Update metadata |
+| PATCH | `/companies/{cid}/assignments/{aid}/file-manager/{id}/status` | Change file status |
+| DELETE | `/companies/{cid}/assignments/{aid}/file-manager/{id}` | Delete file |
+
+## Document & PDF
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/document/{id}/references` | Get references |
+| GET | `/document/{id}/edit` | Comments & proposed changes |
+| GET | `/document/{id}/diff` | Version differences (deprecated — no longer used by frontend) |
+| PATCH | `/document/{id}/edit` | Save changes |
+| GET | `/pdf/{id}` | Get PDF content |
+
+### Annotation `customData` Fields
+
+Annotation objects returned by reference endpoints include a `customData` object with the following fields:
+
+| Field | Type | Description |
+|---|---|---|
+| type | string | `"number"` or `"highlight"` |
+| text | string | Displayed text |
+| documentId | string | Associated document (UUID) |
+| start_offset | int? | Start character position in page text |
+| end_offset | int? | End character position in page text |
+
+<Note>
+`start_offset` and `end_offset` are computed at reference creation time and during re-referencing. They may be `null` for historic references that have not yet been back-filled.
+</Note>
+
+## Version Comparison (Diff)
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/companies/{cid}/assignments/{aid}/document/{docId}/diff` | Get version differences for a document within an assignment |
+
+### Request Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `cid` | string (path) | Company ID |
+| `aid` | string (path) | Assignment ID |
+| `docId` | string (path) | Document ID of the newer document |
+
+### Response
+
+The response can be in two formats:
+
+**Lifecycle format** (new):
+
+| Field | Type | Description |
+|---|---|---|
+| `state` | enum | Processing status: `not_started`, `in_progress`, `ready`, `failed` |
+| `new_document_id` | string | ID of the newer document |
+| `old_document_id` | string | ID of the older document |
+| `new_annotations` | object | Annotations in the newer document (Map: Annotation ID → entry) |
+| `old_annotations` | object | Annotations in the older document (Map: Annotation ID → entry) |
+
+Each annotation entry contains:
+
+| Field | Type | Description |
+|---|---|---|
+| `kind` | enum | Type of change: `added`, `deleted`, `unchanged` |
+| `classification` | enum \| null | Classification: `editorial`, `substantive_expected`, `substantive_unexpected` |
+| `annotation` | object | Annotation details (position, text, bounding box, linked IDs) |
+
+**Legacy format** (deprecated):
+
+| Field | Type | Description |
+|---|---|---|
+| `newTextAnnotations` | array | New text annotations |
+| `deletedTextComments` | array | Deleted text comments |
+
+### WebSocket Event
+
+| Event | Payload | Description |
+|---|---|---|
+| `document_diff_ready` | `{ assignment: string, document_id: string }` | Emitted when the diff calculation is complete |
+
+## Export
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/export/checked-numbers/annotations-grouped-by-file` | Number annotations |
+| GET | `/export/questions/annotations` | Question annotations |
+| GET | `/export/questions/{format}` | Export questions (xlsx/pdf) |
+| GET | `/export/checked-numbers/tabs` | Export number tabs |
+| GET | `/export/changed-assignments` | Changed assignments |
+
+## External API (`/api` Prefix)
+
+Simplified API for external clients with API key authentication. Endpoints: Auth, Company, Assignment, Checklist, Taxonomy.
+
+| Method | Path | Description |
+|---|---|---|
+| POST | `/auth/login` | Login with API key |
+| GET | `/checklists/types` | Supported checklist types |
+| GET | `/checklists/{checklist_type}` | Get control questions for a checklist |
+| GET | `/companies/{cid}/assignments` | List assignments |
+| POST | `/companies/{cid}/assignments` | Create assignment |
+| PATCH | `/companies/{cid}/assignments/{id}` | Update assignment |
+| DELETE | `/companies/{cid}/assignments/{id}` | Delete assignment |
+| POST | `/companies/{cid}/assignments/search` | Search assignments |
+
+<Note>
+The `GET /checklists/{checklist_type}` endpoint returns control questions based on the currently active checklist version. When the active version changes, the available control questions and their validation rules may change.
+</Note>

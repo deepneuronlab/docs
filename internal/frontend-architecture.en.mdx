@@ -1,0 +1,106 @@
+---
+title: "Frontend Architecture"
+description: "Vue 3 SPA — components, state management, services."
+sidebarTitle: "Frontend"
+icon: "window-maximize"
+groups: ["internal"]
+hidden: false
+---
+
+## Tech Stack
+
+| Technology | Version | Purpose |
+|---|---|---|
+| Vue 3 | - | UI framework |
+| Vite | 7.3.1 | Build tool |
+| TypeScript | ~5.9.3 | Type safety |
+| Vue Router | 5.0.4 | Routing |
+| vue-i18n | 11.3.0 | Internationalization |
+| Shoelace | 2.20.1 | Web components |
+| Tailwind CSS | 4.2.2 | Styling |
+| Socket.IO Client | 4.8.1 | Real-time updates |
+| Nutrient SDK | 1.10.0 | PDF viewer |
+| Syncfusion | 33.x | Word/Excel editors |
+| TipTap | - | Rich text editor |
+| XState | 5.28.0 | State machines |
+| Vitest | 4.1.0 | Testing |
+
+## Routes
+
+| Path | Component | Description |
+|---|---|---|
+| `/login` | TheLogin.vue | Login (password + SSO) |
+| `/companies` | TheCompanies.vue | Clients overview |
+| `/company/:id/assignments` | TheAssignments.vue | Assignments overview |
+| `/.../audit/sorting/:idx` | TheAuditFlowContainer.vue | Checklist: Prepare |
+| `/.../review/sorting/:idx` | TheAuditFlowContainer.vue | Checklist: Review |
+| `/.../audit-numbers` | TheAuditFlowContainer.vue | Numbers: Prepare |
+| `/.../review-numbers` | TheAuditFlowContainer.vue | Numbers: Review |
+| `/.../audit-diff` | ~~TheDiffFlow.vue~~ | Diff: Prepare (deprecated — route removed) |
+| `/.../review-diff` | ~~TheDiffFlow.vue~~ | Diff: Review (deprecated — route removed) |
+| `/:cid/:aid/account-mapping` | AccountMapping.vue | Account mapping |
+
+## State Management
+
+Modular store in `src/store/modules/`:
+
+| Module | Description |
+|---|---|
+| `auth` | Token, user, permissions, login/logout |
+| `companies` | Client list, filters, pagination |
+| `assignments` | Assignment list, CRUD |
+| `checklistFlow` | Questions, answers, progress |
+| `numbers` | Number tree, evidence, calculations |
+| `fileManager` | Files, upload progress, versions |
+| `account-mapping` | Account mappings, proposals |
+| `settings` | User settings (language, view) |
+| `features` | Feature flags |
+| `global` | Global errors, notifications |
+
+## Main Components
+
+| Component | Size | Description |
+|---|---|---|
+| TheNumbersFlow.vue | 181KB | Numbers audit (largest component) |
+| TheChecklistFlow.vue | 125KB | Checklist audit |
+| ~~TheDiffFlow.vue~~ | ~~52KB~~ | Version comparison (deprecated — component removed) |
+| AccountMapping.vue | 34KB | Account mapping |
+
+## WebSocket
+
+- Path: `/anexo/ws/socket.io`
+- Protocol: WebSocket (wss/ws)
+- Auth: Token-based
+- Reconnection: Max 5 attempts, 1-5s exponential backoff
+- Multi-tab sync via BroadcastChannel API
+
+### Shared-State Patch Contract
+
+Communication between main and popout windows uses a typed patch protocol for state synchronization. There are two modes:
+
+**Legacy mode (default):** Sends the full state as a snapshot on every update. All fields are transmitted with every message.
+
+**Incremental mode** (enabled via `incrementalSharedStatePatch` feature flag): Sends only changed fields as delta updates. Each message contains:
+
+| Field | Type | Description |
+|---|---|---|
+| `contractVersion` | `1` | Protocol version |
+| `contractMode` | `'incremental'` | Identifies incremental messages |
+| `referencesDelta` | object? | Delta for document references with `reset`, `version`, `documents`, and `changedDocumentIds` |
+| `selectionDelta` | object? | Delta for selection state (focused, selected, and edited annotations) |
+| `highlightDelta` | object? | Delta for highlight state (hover and marked annotations) |
+| `numbersDelta` | object? | Delta for numbers audit state |
+
+Scalar fields (e.g., `viewMode`, `activePageIndex`, `mode`) are transmitted directly at the top level of the message in both modes.
+
+Additionally, the protocol supports action updates for commands such as `findAndChangeDocumentTab`, `updatePageIndex`, `resetInteractionMode`, and `closeFileManagerDialog`.
+
+## Composables (36)
+
+Key composables: `useAuditFlowState`, `useFileUpload`, `useNumbersFlowLoader`, `usePopoutWindow`, `useSocketReconnection`, `useTabSync`, `useVersionChecker`
+
+## Monitoring
+
+- **Sentry** — Error tracking & performance
+- **Usersnap** — In-app feedback
+- **Performance Monitor** — Page freeze detection, hardware reporting

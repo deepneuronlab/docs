@@ -1,0 +1,160 @@
+---
+title: "AI Services"
+description: "Overview of AI/ML services: Delphi, Spectra, Mentat."
+sidebarTitle: "AI Services"
+icon: "brain"
+groups: ["internal"]
+hidden: false
+---
+
+## Overview
+
+Notes Auditor uses three specialized AI services:
+
+## Delphi — LLM Document Analysis
+
+**Port:** 3211 | **Python:** 3.11
+
+Delphi uses Retrieval-Augmented Generation (RAG) for analyzing audit documents and answering checklist questions.
+
+**Pipeline:**
+1. Document is split into chunks
+2. Chunks are stored as vectors in Qdrant
+3. For a question, relevant chunks are retrieved via vector search
+4. LLM (Azure OpenAI) generates an answer based on the chunks
+5. LLM-based reranking for optimal results
+
+**Outputs:** Answers to checklist questions, document references, consistency suggestions
+
+**Prompts:** Localized (de/en) in `delphi/src/delphi/prompts/`
+
+## Spectra — Number Detection
+
+**Port:** 5379 | **Python:** 3.12
+
+Spectra detects financial numbers in documents and extracts their attributes.
+
+**Pipeline:**
+1. Regex-based number detection in the document
+2. AI attribute extraction (multiplier, type, entity, date)
+3. FAISS-based vector search for external evidence
+4. Embedding cache in Redis (14-day TTL)
+
+**Outputs:** Detected numbers with attributes, links to evidence
+
+**Operations:** +, −, x, ÷, Δ% (percentage change)
+
+### Spectra Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| POST | `/search-numbers` | Find numbers in document (regex, no AI) |
+| POST | `/analyze-numbers` | Determine attributes for numbers (via OpenAI) |
+| POST | `/propose-evidences` | Propose evidence between audit and support numbers |
+| POST | `/calculate_consistency` | Calculate consistency between two numbers |
+| GET | `/healthcheck` | Health check |
+| GET | `/readiness` | Readiness probe with memory check |
+
+### Supported Document Formats
+
+Spectra supports the following document formats via the `document_format` parameter:
+
+| Format | Value | Notes |
+|---|---|---|
+| PDF | `pdf` | Default document format |
+| Excel | `excel` | `text` and `paragraphs` must be empty; tables must contain cells |
+| Word | `word` | — |
+
+### Supported Languages (Locale)
+
+| Locale | Value |
+|---|---|
+| German | `de-DE` |
+| English | `en-GB` |
+| Swedish | `sv-SE` |
+| Czech | `cs-CZ` |
+
+### Number Attributes (`NumberAttributes`)
+
+Each detected number can have the following attributes:
+
+| Field | Type | Description |
+|---|---|---|
+| `multiplier` | enum | Multiplier: `1`, `1000`, `1000000`, `1000000000`, `1000000000000`. Invalid values are reset to `null`. |
+| `kind` | enum | Number type: `money`, `percentage`, `count`, `unknown`, `temporal`, `document_reference` |
+| `entity` | string? | Description of meaning (e.g., "number of employees") |
+| `date` | string? | Reference date (e.g., `2024-12-31`) |
+| `numeric_value` | decimal? | Mathematical value (e.g., 10 TEUR → `10000`) |
+
+<Note>
+  When `kind` is `percentage`, `multiplier` is automatically set to `1` (ONE). This prevents incorrect calculations for percentage values.
+</Note>
+
+### Evidence Proposal (`/propose-evidences`)
+
+The endpoint supports both **external** and **internal evidence**:
+
+- **External evidence:** Audit numbers from an audit document are matched with numbers from support documents.
+- **Internal evidence:** If the audit document is also included in `support_documents`, transitive connections are automatically computed (e.g., if A↔B and B↔C, then also A↔C).
+
+Each piece of evidence has a `reference_state` (`proposal` or `accepted`) and a `consistency` (`consistent`, `inconsistent`, or `none`). For transitive connections, the most conservative assessment applies.
+
+### Consistency Check (`/calculate_consistency`)
+
+Checks whether two numbers (audit and support) are numerically consistent based on their attributes. Missing attributes are derived from the text. Returns `consistent` or `inconsistent`.
+
+## 3. Pythia — ML Scoring
+
+**Port:** 5378 | **Python:** 3.10
+
+Pythia provides binary classification (yes/no) for checklist questions based on historical answer data.
+
+**Inputs:** Question + document context
+**Outputs:** Probability score for yes/no
+
+## 4. Mentat — Account Mapping
+
+**Port:** 3212 | **Python:** 3.11
+
+Mentat maps accounts from bookkeeping to taxonomy positions. Uses a 6-stage matching approach:
+
+<Steps>
+  <Step title="Position Name">
+    Direct name matching
+  </Step>
+  <Step title="Mathematical Matching">
+    3 strategies for sum reconciliation
+  </Step>
+  <Step title="Vector Search">
+    Similar accounts via Qdrant
+  </Step>
+  <Step title="ML Classification">
+    FastText-based mapping
+  </Step>
+  <Step title="LLM Hierarchy">
+    Hierarchical traversal via Azure OpenAI
+  </Step>
+  <Step title="Manual">
+    Fallback for accounts that cannot be mapped automatically
+  </Step>
+</Steps>
+
+## Configuration (Environment Variables)
+
+```
+ENABLE_SPECTRA_PREDICTIONS=true
+ENABLE_DELPHI_PREDICTIONS=true
+ENABLE_MENTAT_PREDICTIONS=true
+ENABLE_STD_CALCULATIONS_PREDICTIONS=true
+ENABLE_LLM_CALCULATIONS_PREDICTIONS=true
+ENABLE_LLM_DIFF_CLASSIFICATIONS=true  # deprecated — diff feature removed from frontend
+LLM_CALCULATIONS_MAX_CONCURRENT_DOCUMENTS=1
+LLM_CALCULATIONS_MAX_CONCURRENT_REQUESTS=4
+```
+
+## Timeouts
+
+| Service | Timeout |
+|---|---|
+| Spectra | 3000s |
+| Delphi | 900s |

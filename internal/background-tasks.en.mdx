@@ -1,0 +1,52 @@
+---
+title: "Background Tasks"
+description: "Huey task queue, cron jobs, and asynchronous processing."
+sidebarTitle: "Background Tasks"
+icon: "gears"
+groups: ["internal"]
+hidden: false
+---
+
+## Task Queue: Huey with Redis
+
+Two separate queues for different workloads:
+
+### io_huey — I/O-Intensive Tasks
+
+| Task | Description |
+|---|---|
+| `initialize_questionnaire_task` | Checklist initialization |
+| `extract_text_from_all_pdf_files_task` | Text extraction from PDFs |
+| `import_docx_comments_and_proposed_changes_into_db_for_all_files_task` | Import DOCX comments |
+| `enqueue_delphi_predictions_task` | Start LLM predictions |
+| `update_spectra_predictions_of_new_assignment_task` | Start number detection |
+| `send_emails_task` | Send emails |
+| `trigger_file_ai_analysis_task` | Start AI file analysis |
+
+### cpu_huey — CPU-Intensive Tasks
+
+| Task | Description |
+|---|---|
+| `update_calculations_of_new_assignment_task` | Update calculations (parallel, controlled via `LLM_CALCULATIONS_MAX_CONCURRENT_DOCUMENTS` and `LLM_CALCULATIONS_MAX_CONCURRENT_REQUESTS`) |
+| `recreate_questionnaire_from_edited_criteria_task` | Regenerate checklist |
+| `remove_duplicate_number_references_task` | Clean up duplicates |
+| `backfill_reference_offsets_task` | Backfill character offsets for references |
+
+## Cron Jobs
+
+| Interval | Task | Description |
+|---|---|---|
+| Daily | Delete expired restore points | TimeMachine cleanup |
+| Daily | Delete incomplete assignments after 7 days | Draft cleanup |
+| Every minute | Send pending emails | Email queue |
+
+## Concurrency Control
+
+Distributed locks via Aioredlock (Redis):
+
+| Lock | Purpose |
+|---|---|
+| `questionnaire_lock_manager` | Checklist processing |
+| `delphi_cleanup_lock_manager` | Delphi cleanup |
+| `reference_merger_lock_manager` | Merging references |
+| `send_email_lock_manager` | Email delivery |

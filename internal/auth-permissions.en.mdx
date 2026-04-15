@@ -1,0 +1,60 @@
+---
+title: "Authentication & Permissions"
+description: "Auth flows, roles, and permission model."
+sidebarTitle: "Auth & Permissions"
+icon: "shield"
+groups: ["internal"]
+hidden: false
+---
+
+## Authentication
+
+### Login Methods
+
+1. **Username/Password** — Standard login via FastAPI-Users
+2. **Azure AD (Entra ID)** — SSO via OIDC
+3. **Mazars** — Custom identity provider via OIDC
+
+### Token Management
+
+- OAuth2 with Bearer Token
+- Token refresh: 5 minutes before expiry
+- Auto-logout on inactivity
+- Identity provider mapping: `unique_together(provider, provider_id)`
+
+## Permission Model
+
+### Permissions (per user)
+
+| Permission | Description |
+|---|---|
+| `can_create_companies` | Create clients |
+| `can_edit_companies` | Edit clients |
+| `can_delete_companies` | Delete clients |
+| `can_create_assignments` | Create assignments |
+| `can_delete_assignments` | Delete assignments |
+| `can_change_assignment_users` | Change user assignments |
+| `can_see_all_companies` | View all clients |
+| `can_see_all_assignments` | View all assignments |
+| `can_send_emails` | Send emails |
+| `can_use_ai_assistant` | Use AI assistant (feature flag) |
+
+### Roles
+
+- **User** — Standard access to assigned clients/assignments
+- **Group Admin** (`is_group_admin`) — User and group management via admin panel
+- **External API User** (`is_external_api_user`) — Access to the external API with API key
+
+### Access Hierarchy
+
+1. **Group** — Organizational unit, controls available checklists and features
+2. **Client** — Belongs to a group, access via `can_see_all_companies` or assignment
+3. **Assignment** — Belongs to a client, access via `can_see_all_assignments` or `AssignmentUser`
+
+## Admin Panel
+
+HTML-based interface (separate from the main API). Functions:
+- Create, verify, activate/deactivate users
+- Manage groups
+- Enable/disable checklists per group
+- Control feature flags per group
