@@ -16,6 +16,7 @@
           {
             "group": "Getting Started",
             "pages": [
+              "getting-started/overview.en",
               "getting-started/index.en"
             ]
           },
@@ -107,6 +108,7 @@
           {
             "group": "Erste Schritte",
             "pages": [
+              "getting-started/overview.de",
               "getting-started/index.de"
             ]
           },
