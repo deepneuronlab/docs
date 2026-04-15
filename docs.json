@@ -197,6 +197,10 @@
   "navbar": {
     "links": [
       {
+        "label": "Release Notes",
+        "href": "https://www.dnl.ai/news"
+      },
+      {
         "label": "Support",
         "href": "mailto:support@dnl.ai"
       }
