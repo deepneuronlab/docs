@@ -26,7 +26,7 @@ Differences are classified into three categories:
 You can filter the displayed annotations by classification using the filter controls in the compare toolbar. Annotations are highlighted in both document panes, and clicking an annotation scrolls the opposite pane to the corresponding change.
 
 <Note>
-The diff comparison may take a moment to process. A loading indicator is shown while the comparison is being prepared. The processing status progresses through `not_started`, `in_progress`, and `ready`. If processing fails, the status is set to `failed` and you can retry.
+The diff comparison may take a moment to process. A loading indicator is shown while the comparison is being prepared. The processing status progresses through `not_started`, `in_progress`, and `ready`. If processing fails, the system automatically attempts to regenerate the comparison. During regeneration, the status returns to `in_progress`. If regeneration cannot be attempted (for example, within one hour of a previous attempt), the status is set to `failed` and you can retry later.
 </Note>
 
 This functionality ensures that all changes between document versions are clearly visible and can be reviewed.

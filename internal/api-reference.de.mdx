@@ -237,7 +237,7 @@ Die Antwort kann in zwei Formaten vorliegen:
 
 | Feld | Typ | Beschreibung |
 |---|---|---|
-| `state` | enum | Verarbeitungsstatus: `not_started`, `in_progress`, `ready`, `failed` |
+| `state` | enum | Verarbeitungsstatus: `not_started`, `in_progress`, `ready`, `failed`. Wenn der Server beim Erstellen der Annotationen veraltete interne Daten erkennt, wird der Diff automatisch auf `in_progress` zurückgesetzt und eine Neugenerierung ausgelöst. Eine einstündige Sperre verhindert wiederholte Neugenerierungsversuche — innerhalb dieses Zeitfensters geben nachfolgende Anfragen `failed` zurück. |
 | `new_document_id` | string | ID des neueren Dokuments |
 | `old_document_id` | string | ID des älteren Dokuments |
 | `new_annotations` | object | Annotationen im neueren Dokument (Map: Annotation-ID → Eintrag) |
