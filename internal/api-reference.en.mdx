@@ -238,7 +238,7 @@ The response can be in two formats:
 
 | Field | Type | Description |
 |---|---|---|
-| `state` | enum | Processing status: `not_started`, `in_progress`, `ready`, `failed` |
+| `state` | enum | Processing status: `not_started`, `in_progress`, `ready`, `failed`. When the server detects stale internal data while building annotations, it automatically resets the diff to `in_progress` and triggers a regeneration. A one-hour lockout prevents repeated regeneration attempts — during that window, subsequent requests return `failed` instead. |
 | `new_document_id` | string | ID of the newer document |
 | `old_document_id` | string | ID of the older document |
 | `new_annotations` | object | Annotations in the newer document (Map: Annotation ID → entry) |

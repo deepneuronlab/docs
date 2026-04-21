@@ -26,7 +26,7 @@ Unterschiede werden in drei Kategorien eingeteilt:
 Über die Filtersteuerung in der Vergleichssymbolleiste können die angezeigten Annotationen nach Klassifikation gefiltert werden. Annotationen werden in beiden Dokumentansichten hervorgehoben. Durch Klicken auf eine Annotation wird die gegenüberliegende Ansicht zur entsprechenden Änderung gescrollt.
 
 <Note>
-Der Versionsvergleich kann einen Moment dauern. Während der Verarbeitung wird eine Ladeanzeige eingeblendet. Der Verarbeitungsstatus durchläuft die Stufen `not_started`, `in_progress` und `ready`. Falls die Verarbeitung fehlschlägt, wird der Status auf `failed` gesetzt und Sie können es erneut versuchen.
+Der Versionsvergleich kann einen Moment dauern. Während der Verarbeitung wird eine Ladeanzeige eingeblendet. Der Verarbeitungsstatus durchläuft die Stufen `not_started`, `in_progress` und `ready`. Falls die Verarbeitung fehlschlägt, versucht das System automatisch, den Vergleich neu zu generieren. Während der Neugenerierung wird der Status auf `in_progress` zurückgesetzt. Wenn keine Neugenerierung möglich ist (z. B. innerhalb einer Stunde nach einem vorherigen Versuch), wird der Status auf `failed` gesetzt und Sie können es später erneut versuchen.
 </Note>
 
 Diese Funktion stellt sicher, dass alle Änderungen zwischen den Dokumentversionen klar ersichtlich sind und überprüft werden können.
